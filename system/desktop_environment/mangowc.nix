@@ -15,6 +15,7 @@ in
     programs = {
       mango = {
         enable = true;
+        addLoginEntry = true;
       };
     };
   };
