@@ -34,7 +34,7 @@
           eiros_hardware.nixosModules.default
           eiros_users.nixosModules.default
           hjem.nixosModules.default
-          mango.nixosModules.default
+          mango.nixosModules.mango
         ]
         ++ (import_modules ./system)
         ++ (import_modules ./users);
