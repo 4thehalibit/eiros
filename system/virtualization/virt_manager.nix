@@ -71,7 +71,6 @@ in
     virtualisation = {
       libvirtd = {
         enable = true;
-        secrets.enable = false;
 
         qemu = {
           vhostUserPackages = lib.mkIf eiros_virt_manager.shared_folder_support.enable [
