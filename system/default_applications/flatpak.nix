@@ -4,18 +4,9 @@
   pkgs,
   ...
 }:
+
 let
   cfg = config.eiros.system.default_applications.flatpak;
-
-  # Discover lives at pkgs.kdePackages.discover on most modern nixpkgs,
-  # but some channels expose it as pkgs.discover.
-  discoverPkg =
-    if pkgs ? kdePackages && pkgs.kdePackages ? discover then
-      pkgs.kdePackages.discover
-    else if pkgs ? discover then
-      pkgs.discover
-    else
-      null;
 in
 {
   options.eiros.system.default_applications.flatpak = {
@@ -24,31 +15,55 @@ in
       default = true;
       description = "Enable Flatpak support.";
     };
-
-    discover = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Install KDE Discover as a GUI software center (recommended for non-GNOME).";
-    };
   };
 
   config = lib.mkIf cfg.enable {
+
     services.flatpak.enable = true;
 
     systemd.services.flatpak-repo = {
+      description = "Add Flathub Flatpak remote";
+
       wantedBy = [ "multi-user.target" ];
-      path = [ pkgs.flatpak ];
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
+
+      path = [
+        pkgs.flatpak
+        pkgs.curl
+        pkgs.coreutils
+      ];
+
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+
+        Restart = "on-failure";
+        RestartSec = "10s";
+        StartLimitIntervalSec = 0;
+      };
+
       script = ''
-        flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+        set -euo pipefail
+
+        echo "Waiting for network access..."
+
+        for i in $(seq 1 30); do
+          if curl -fsSL --max-time 5 https://flathub.org/ >/dev/null; then
+            echo "Network ready."
+            break
+          fi
+          echo "Network/DNS not ready (attempt $i/30)"
+          sleep 10
+        done
+
+        curl -fsSL --max-time 10 https://flathub.org/repo/flathub.flatpakrepo >/dev/null
+
+        flatpak remote-add --system --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+        echo "Flathub remote ensured."
       '';
-      serviceConfig.Type = "oneshot";
     };
 
-    # GUI software center support (non-GNOME)
-    services.packagekit.enable = lib.mkIf cfg.discover true;
-
-    environment.systemPackages = lib.optionals cfg.discover (
-      lib.optionals (discoverPkg != null) [ discoverPkg ]
-    );
   };
 }
