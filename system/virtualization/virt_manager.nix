@@ -65,6 +65,7 @@ in
     programs = {
       virt-manager = {
         enable = true;
+        secrets.enable = false;
       };
     };
 
