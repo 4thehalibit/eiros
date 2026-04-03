@@ -18,6 +18,47 @@ let
       map toString v
     else
       [ (toString v) ];
+
+  make_bind_line =
+    kb:
+    let
+      modifier_keys_str = lib.concatStringsSep "+" kb.modifier_keys;
+      command_args_str = if kb.command_arguments == null then "" else kb.command_arguments;
+    in
+    "${modifier_keys_str},${kb.key_symbol},${kb.mangowc_command},${command_args_str}";
+
+  dms_exec_once =
+    lib.optionalAttrs config.eiros.system.desktop_environment.dank_material_shell.enable {
+      "exec-once" =
+        [
+          "dms run"
+          "udiskie &"
+          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=wlroots"
+        ]
+        ++ lib.optionals config.eiros.system.desktop_environment.keyring.enable [
+          "gnome-keyring-daemon --start --components=secrets,ssh"
+        ];
+    };
+
+  make_mangowc_config =
+    mangowc_cfg:
+    let
+      extra_bind_attrs = builtins.foldl' (
+        acc: kb:
+        let
+          flags_str = lib.concatStrings (kb.flag_modifiers or [ ]);
+          bind_key = "bind" + flags_str;
+          line = make_bind_line kb;
+          previous = acc.${bind_key} or [ ];
+        in
+        acc // { ${bind_key} = previous ++ [ line ]; }
+      ) { } (lib.attrValues mangowc_cfg.keybinds);
+    in
+    mangowc_cfg.settings
+    // dms_exec_once
+    // lib.mapAttrs (
+      name: lines: (to_string_list (mangowc_cfg.settings.${name} or [ ])) ++ lines
+    ) extra_bind_attrs;
 in
 {
   options = {
@@ -145,54 +186,7 @@ in
       username: user_config:
       let
         mangowc_cfg = user_config.mangowc;
-
         mangowc_enabled = config.eiros.system.desktop_environment.mangowc.enable && mangowc_cfg != null;
-
-        make_bind_line =
-          kb:
-          let
-            modifier_keys_str = lib.concatStringsSep "+" kb.modifier_keys;
-            command_args_str = if kb.command_arguments == null then "" else kb.command_arguments;
-          in
-          "${modifier_keys_str},${kb.key_symbol},${kb.mangowc_command},${command_args_str}";
-
-        extra_bind_attrs =
-          if mangowc_cfg == null then
-            { }
-          else
-            builtins.foldl' (
-              acc: kb:
-              let
-                flags_str = lib.concatStrings (kb.flag_modifiers or [ ]);
-                bind_key = "bind" + flags_str;
-                line = make_bind_line kb;
-                previous = acc.${bind_key} or [ ];
-              in
-              acc // { ${bind_key} = previous ++ [ line ]; }
-            ) { } (lib.attrValues mangowc_cfg.keybinds);
-
-        dms_exec_once =
-          lib.optionalAttrs config.eiros.system.desktop_environment.dank_material_shell.enable
-            {
-              "exec-once" = [
-                "dms run"
-                "udiskie &"
-                "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=wlroots"
-              ]
-              ++ lib.optionals config.eiros.system.desktop_environment.keyring.enable [
-                "gnome-keyring-daemon --start --components=secrets,ssh"
-              ];
-            };
-
-        merged_settings =
-          if mangowc_cfg == null then
-            { }
-          else
-            mangowc_cfg.settings
-            // dms_exec_once
-            // lib.mapAttrs (
-              name: lines: (to_string_list (mangowc_cfg.settings.${name} or [ ])) ++ lines
-            ) extra_bind_attrs;
       in
       {
         directory = lib.mkDefault "/home/${username}";
@@ -202,7 +196,7 @@ in
           ".config/mango/config.conf" = {
             clobber = lib.mkDefault mangowc_cfg.clobber_home_directory;
             generator = mangowc_generator;
-            value = merged_settings;
+            value = make_mangowc_config mangowc_cfg;
           };
         };
       }
