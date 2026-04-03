@@ -92,6 +92,8 @@ in
 
     systemd.timers.eiros-journal-vacuum = lib.mkIf eiros_journald.vacuum.enable {
       description = "Eiros journal vacuum timer";
+      after = [ "time-sync.target" ];
+      requires = [ "time-sync.target" ];
       timerConfig = {
         OnCalendar = eiros_journald.vacuum.dates;
         Persistent = true;
