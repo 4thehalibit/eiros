@@ -72,11 +72,13 @@ in
       };
     };
 
-    programs = {
-      yazi = {
-        enable = true;
-        package = eiros_yazi.package;
-      };
+    xdg.mime.defaultApplications = lib.mkIf eiros_yazi.default_file_browser.enable {
+      "inode/directory" = "yazi.desktop";
+    };
+
+    programs.yazi = {
+      enable = true;
+      package = eiros_yazi.package;
     };
   };
 }
