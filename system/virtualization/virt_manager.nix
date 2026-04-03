@@ -44,6 +44,12 @@ in
       description = "Install virt-viewer for viewing virtual machine consoles.";
       type = lib.types.bool;
     };
+
+    ovmf.enable = lib.mkOption {
+      default = true;
+      description = "Enable OVMF UEFI firmware for virtual machines. Required for UEFI-based guests (Windows 11, modern Linux ISOs).";
+      type = lib.types.bool;
+    };
   };
 
   config = lib.mkIf (eiros_virtualization.enable && eiros_virt_manager.enable) {
@@ -69,6 +75,7 @@ in
         enable = true;
 
         qemu = {
+          ovmf.enable = eiros_virt_manager.ovmf.enable;
           vhostUserPackages = lib.mkIf eiros_virt_manager.shared_folder_support.enable [
             pkgs.virtiofsd
           ];

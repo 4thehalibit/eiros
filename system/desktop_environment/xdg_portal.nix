@@ -35,6 +35,9 @@ in
         default = [ "wlr" ];
         "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
         "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
+        # Route Secret portal to gtk so browsers and Electron apps can
+        # store credentials in GNOME Keyring without re-prompting each launch.
+        "org.freedesktop.impl.portal.Secret" = [ "gtk" ];
       };
     };
   };
