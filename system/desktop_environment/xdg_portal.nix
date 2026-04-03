@@ -16,23 +16,25 @@ in
     };
   };
 
-  config.xdg.portal = lib.mkIf eiros_xdg_portal.enable {
-    enable = true;
-
-    wlr = {
-      enable = true;
-    };
-
-    extraPortals = [
-      pkgs.xdg-desktop-portal-gtk
+  config = lib.mkIf eiros_xdg_portal.enable {
+    environment.systemPackages = [
+      pkgs.grim
+      pkgs.slurp
     ];
 
-    config = {
-      common = {
-        default = lib.mkDefault [
-          "wlr"
-          "gtk"
-        ];
+    xdg.portal = {
+      enable = true;
+
+      wlr.enable = true;
+
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
+      ];
+
+      config.common = {
+        default = [ "wlr" ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+        "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
       };
     };
   };
