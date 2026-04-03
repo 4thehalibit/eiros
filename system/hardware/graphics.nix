@@ -47,6 +47,12 @@ in
         type = lib.types.bool;
       };
 
+      enable_nvidia_settings = lib.mkOption {
+        default = true;
+        description = "Install the nvidia-settings GUI tool.";
+        type = lib.types.bool;
+      };
+
       prime = {
         enable = lib.mkOption {
           default = false;
@@ -125,7 +131,7 @@ in
 
         enable32Bit = eiros_graphics.enable_32_bit;
 
-        extraPackages = lib.mkIf nvidia_enabled [
+        extraPackages = lib.optionals nvidia_enabled [
           pkgs.egl-wayland
           pkgs.nvidia-vaapi-driver
         ];
@@ -137,7 +143,7 @@ in
             enable = true;
           };
 
-          nvidiaSettings = true;
+          nvidiaSettings = eiros_nvidia.enable_nvidia_settings;
           open = eiros_nvidia.open.enable;
         }
         // (lib.optionalAttrs prime_enabled {

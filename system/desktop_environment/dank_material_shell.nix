@@ -43,7 +43,7 @@ let
         in
         if body == "" then
           ""
-        else if section_name == "" || section_name == null then
+        else if section_name == "" then
           body
         else
           ''

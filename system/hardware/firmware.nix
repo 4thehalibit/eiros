@@ -40,10 +40,7 @@ in
       firmware = eiros_firmware.extra_packages;
     };
 
-    # Enable fwupd daemon
-    services.fwupd.enable = lib.mkIf eiros_firmware.enable_fwupd true;
-
-    # Optional: ensure fwupd CLI is available
-    environment.systemPackages = lib.mkIf eiros_firmware.enable_fwupd [ pkgs.fwupd ];
+    services.fwupd.enable = eiros_firmware.enable_fwupd;
+    environment.systemPackages = lib.optionals eiros_firmware.enable_fwupd [ pkgs.fwupd ];
   };
 }

@@ -52,7 +52,7 @@ in
       };
 
       settings = {
-        auto-optimise-store = lib.mkIf eiros_gc.auto_optimise_store.enable true;
+        auto-optimise-store = eiros_gc.auto_optimise_store.enable;
 
         # Disk pressure GC: Nix will try to GC when low on space.
         min-free = eiros_gc.disk_pressure.min_free;
