@@ -19,20 +19,19 @@ in
 {
   options.eiros.system.default_applications.flatpak = {
     enable = lib.mkOption {
-      type = lib.types.bool;
       default = true;
       description = "Enable Flatpak support.";
+      type = lib.types.bool;
     };
 
     discover = lib.mkOption {
-      type = lib.types.bool;
       default = true;
       description = "Install KDE Discover for managing Flatpak applications.";
+      type = lib.types.bool;
     };
   };
 
   config = lib.mkIf eiros_flatpak.enable {
-
     warnings = lib.optional (eiros_flatpak.discover && discoverPkg == null)
       "eiros: flatpak.discover = true but no Discover package found in pkgs";
 
@@ -56,6 +55,5 @@ in
         flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
       '';
     };
-
   };
 }

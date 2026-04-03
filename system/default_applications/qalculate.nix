@@ -11,7 +11,7 @@ in
   options.eiros.system.default_applications.qalculate = {
     enable = lib.mkOption {
       default = true;
-      description = "Enable Qalculate";
+      description = "Enable Qalculate.";
       type = lib.types.bool;
     };
 

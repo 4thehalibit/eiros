@@ -35,7 +35,6 @@ let
         --add-flags "${lib.concatStringsSep " " vivaldiFlags}"
     '';
   });
-
 in
 {
   options.eiros.system.default_applications.vivaldi = {

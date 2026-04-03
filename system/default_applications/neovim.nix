@@ -12,7 +12,7 @@ in
 
     enable = lib.mkOption {
       default = true;
-      description = "Whether or not to use NeoVim as the editor for Eiros";
+      description = "Whether or not to use NeoVim as the editor for Eiros.";
       type = lib.types.bool;
     };
 

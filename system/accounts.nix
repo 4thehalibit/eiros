@@ -5,7 +5,7 @@ in
 {
   options.eiros.system.accounts.mutable_users.enable = lib.mkOption {
     default = true;
-    description = "Allow users to create new accounts";
+    description = "Allow users to create new accounts.";
     type = lib.types.bool;
   };
 

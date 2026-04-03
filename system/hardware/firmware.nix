@@ -22,9 +22,9 @@ in
     };
 
     enable_fwupd = lib.mkOption {
-      type = lib.types.bool;
       default = true;
       description = "Enable fwupd (firmware update daemon, used by KDE Discover).";
+      type = lib.types.bool;
     };
   };
 

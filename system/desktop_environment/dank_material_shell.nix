@@ -15,14 +15,14 @@ in
   options.eiros.system.desktop_environment.dank_material_shell = {
     enable = lib.mkOption {
       default = true;
-      description = "Enable the Eiros Dank Material Shell";
+      description = "Enable the Eiros Dank Material Shell.";
       type = lib.types.bool;
     };
 
     greeter = {
       enable = lib.mkOption {
         default = true;
-        description = "Enable the Eiros Dank Material Shell Greeter";
+        description = "Enable the Eiros Dank Material Shell Greeter.";
         type = lib.types.bool;
       };
 
@@ -59,7 +59,7 @@ in
     };
     search.enable = lib.mkOption {
       default = true;
-      description = "Enable DankSearch";
+      description = "Enable DankSearch.";
       type = lib.types.bool;
     };
   };

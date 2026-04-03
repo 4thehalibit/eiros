@@ -5,7 +5,7 @@ in
 {
   options.eiros.system.language.locale = lib.mkOption {
     default = "en_US.UTF-8";
-    description = "Language locale for the system (e.g. en_US.UTF-8)";
+    description = "Language locale for the system (e.g. en_US.UTF-8).";
     type = lib.types.str;
   };
 

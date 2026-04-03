@@ -4,7 +4,6 @@
   pkgs,
   ...
 }:
-
 let
   eiros_virtualization = config.eiros.system.virtualization;
   eiros_podman = eiros_virtualization.podman;
@@ -16,23 +15,18 @@ in
   options.eiros.system.virtualization.podman = {
     enable = lib.mkOption {
       default = true;
-      description = "Enable podman";
+      description = "Enable podman.";
       type = lib.types.bool;
     };
 
-    # Add this: enable compose tooling
     compose = {
       enable = lib.mkOption {
-        type = lib.types.bool;
         default = true;
         description = "Install a compose provider so `podman compose` / `podman-compose` works.";
+        type = lib.types.bool;
       };
 
       provider = lib.mkOption {
-        type = lib.types.enum [
-          "podman-compose"
-          "docker-compose"
-        ];
         default = "podman-compose";
         description = ''
           Which compose provider to install.
@@ -40,6 +34,10 @@ in
           - "podman-compose": python-based tool (`podman-compose ...`)
           - "docker-compose": Docker Compose v2 binary (`podman compose ...` can use it as provider)
         '';
+        type = lib.types.enum [
+          "podman-compose"
+          "docker-compose"
+        ];
       };
     };
   };
