@@ -8,20 +8,24 @@
 let
   eiros_vivaldi = config.eiros.system.default_applications.vivaldi;
 
-  vivaldiFlags = [
-    "--ozone-platform=wayland"
+  vivaldiFlags =
+    [
+      "--ozone-platform=wayland"
 
-    "--enable-features=UseOzonePlatform,ExternalProtocolDialog,WaylandLinuxDrmSyncobj,Vulkan"
-    "--disable-features=IntentPicker,DelegatedCompositing"
+      "--enable-features=UseOzonePlatform,ExternalProtocolDialog,WaylandLinuxDrmSyncobj,Vulkan"
+      "--disable-features=IntentPicker,DelegatedCompositing"
 
-    # Force ANGLE to Vulkan (no OpenGL fallback)
-    "--use-angle=vulkan"
+      # Force ANGLE to Vulkan (no OpenGL fallback)
+      "--use-angle=vulkan"
 
-    # Vulkan stability fixes
-    "--disable-zero-copy"
-    "--disable-gpu-sandbox"
-    "--num-raster-threads=1"
-  ];
+      # Vulkan stability fixes
+      "--disable-zero-copy"
+      "--num-raster-threads=1"
+    ]
+    # Disables Chromium's GPU process sandbox. This is a security regression but
+    # may be required to work around rendering issues with certain NVIDIA driver
+    # and Vulkan combinations. Opt-in via disable_gpu_sandbox = true.
+    ++ lib.optionals eiros_vivaldi.disable_gpu_sandbox [ "--disable-gpu-sandbox" ];
 
   vivaldi-wayland = pkgs.vivaldi.overrideAttrs (old: {
     nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgs.makeWrapper ];
@@ -35,6 +39,12 @@ let
 in
 {
   options.eiros.system.default_applications.vivaldi = {
+    disable_gpu_sandbox = lib.mkOption {
+      default = false;
+      description = "Disable Chromium's GPU process sandbox (--disable-gpu-sandbox). This is a security regression — only enable if needed to work around NVIDIA/Vulkan rendering issues.";
+      type = lib.types.bool;
+    };
+
     desktop_file = lib.mkOption {
       default = "vivaldi.desktop";
       description = "Desktop file used for default browser associations.";

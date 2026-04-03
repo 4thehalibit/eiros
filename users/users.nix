@@ -82,7 +82,7 @@ in
 
               initial_password = lib.mkOption {
                 default = name;
-                description = "Initial password for the user.";
+                description = "Initial password for the user. WARNING: defaults to the username — change this before deploying to a real system.";
                 type = lib.types.str;
               };
 
@@ -175,6 +175,14 @@ in
   };
 
   config = {
+    warnings = lib.flatten (
+      lib.mapAttrsToList (
+        username: user_config:
+        lib.optional (user_config.initial_password == username)
+          "User '${username}' has initial_password set to their username — change this before deploying to a real system."
+      ) config.eiros.users
+    );
+
     assertions = lib.flatten (
       lib.mapAttrsToList (
         username: user_config:

@@ -22,10 +22,18 @@ in
           "Source"
           "Sink"
           "Media"
-          "Socket"
         ];
-        description = "Bluetooth audio roles to enable (PipeWire/BlueZ).";
-        type = lib.types.listOf lib.types.str;
+        description = "Bluetooth audio roles to enable (PipeWire/BlueZ). Valid BlueZ General.Enable values: Controller, Bredr, Hs, Audio, Source, Sink, Health, Media.";
+        type = lib.types.listOf (lib.types.enum [
+          "Controller"
+          "Bredr"
+          "Hs"
+          "Audio"
+          "Source"
+          "Sink"
+          "Health"
+          "Media"
+        ]);
       };
     };
   };

@@ -15,6 +15,7 @@ in
     extraLocaleSettings = builtins.listToAttrs (
       map (key: { name = key; value = eiros_language.locale; }) [
         "LC_ADDRESS"
+        "LC_COLLATE"
         "LC_IDENTIFICATION"
         "LC_MEASUREMENT"
         "LC_MONETARY"
