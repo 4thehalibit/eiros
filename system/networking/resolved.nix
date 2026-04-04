@@ -20,7 +20,7 @@ in
   config = lib.mkIf eiros_resolved.enable {
     services.resolved = {
       enable = true;
-      dnssec = eiros_resolved.dnssec;
+      settings.Resolve.DNSSEC = eiros_resolved.dnssec;
     };
   };
 }
