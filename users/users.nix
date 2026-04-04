@@ -4,6 +4,8 @@ let
   helpers = import ../resources/nix/mangowc_helpers.nix lib;
   inherit (helpers) mangowc_generator make_mangowc_config keybind_submodule;
 
+  default_keybinds = config.eiros.system.desktop_environment.mangowc.default_keybinds.keybinds;
+
   mangowc_systemd_exec_once =
     let
       mangowc_systemd = config.eiros.system.desktop_environment.mangowc.systemd;
@@ -32,7 +34,13 @@ let
 
   make_user_mangowc_config =
     mangowc_cfg:
-    make_mangowc_config mangowc_cfg
+    let
+      effective_keybinds =
+        (lib.optionalAttrs mangowc_cfg.default_keybinds.enable default_keybinds)
+        // mangowc_cfg.keybinds;
+      effective_cfg = mangowc_cfg // { keybinds = effective_keybinds; };
+    in
+    make_mangowc_config effective_cfg
     // mangowc_systemd_exec_once
     // dms_exec_once
     // wallpaper_exec_once mangowc_cfg;
@@ -75,6 +83,12 @@ in
                         type = lib.types.bool;
                       };
 
+                      default_keybinds.enable = lib.mkOption {
+                        default = true;
+                        description = "Apply the Eiros default MangoWC keybinds. User keybinds with matching names override the defaults.";
+                        type = lib.types.bool;
+                      };
+
                       wallpaper = lib.mkOption {
                         default = null;
                         description = "Absolute path to the wallpaper image. When set, runs `dms ipc call wallpaper set <path>` on login.";
@@ -83,7 +97,7 @@ in
 
                       keybinds = lib.mkOption {
                         default = { };
-                        description = "Structured MangoWC keybind declarations.";
+                        description = "Structured MangoWC keybind declarations. Keys matching a default keybind name override that default.";
                         type = lib.types.attrsOf keybind_submodule;
                       };
 
