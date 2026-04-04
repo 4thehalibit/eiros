@@ -27,21 +27,14 @@ let
     in
     "${modifier_keys_str},${kb.key_symbol},${kb.mangowc_command},${command_args_str}";
 
-  mangowc_systemd_exec_once =
-    let
-      mangowc_systemd = config.eiros.system.desktop_environment.mangowc.systemd;
-      vars_str = lib.concatStringsSep " " mangowc_systemd.variables;
-    in
-    lib.optionalAttrs (config.eiros.system.desktop_environment.mangowc.enable && mangowc_systemd.enable) {
-      "exec-once" = [
-        "systemctl --user import-environment ${vars_str}"
-        "dbus-update-activation-environment --systemd ${vars_str}"
-      ];
-    };
-
   dms_exec_once =
     lib.optionalAttrs config.eiros.system.desktop_environment.dank_material_shell.enable {
-      "exec-once" = [ "udiskie &" ];
+      "exec-once" =
+        [
+          "dms run"
+          "udiskie &"
+          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=wlroots"
+        ];
     };
 
   wallpaper_exec_once =
@@ -65,7 +58,6 @@ let
       ) { } (lib.attrValues mangowc_cfg.keybinds);
     in
     mangowc_cfg.settings
-    // mangowc_systemd_exec_once
     // dms_exec_once
     // wallpaper_exec_once mangowc_cfg
     // lib.mapAttrs (
