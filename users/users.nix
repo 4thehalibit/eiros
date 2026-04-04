@@ -31,10 +31,15 @@ let
     lib.optionalAttrs config.eiros.system.desktop_environment.dank_material_shell.enable {
       "exec-once" =
         [
-          "dms run"
           "udiskie &"
           "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=wlroots"
         ];
+    };
+
+  wallpaper_exec_once =
+    mangowc_cfg:
+    lib.optionalAttrs (mangowc_cfg.wallpaper != null) {
+      "exec-once" = [ "dms ipc call wallpaper set ${mangowc_cfg.wallpaper}" ];
     };
 
   make_mangowc_config =
@@ -53,6 +58,7 @@ let
     in
     mangowc_cfg.settings
     // dms_exec_once
+    // wallpaper_exec_once mangowc_cfg
     // lib.mapAttrs (
       name: lines: (to_string_list (mangowc_cfg.settings.${name} or [ ])) ++ lines
     ) extra_bind_attrs;
@@ -93,6 +99,12 @@ in
                         default = true;
                         description = "Whether hjem is allowed to clobber the existing home directory.";
                         type = lib.types.bool;
+                      };
+
+                      wallpaper = lib.mkOption {
+                        default = null;
+                        description = "Absolute path to the wallpaper image. When set, runs `dms ipc call wallpaper set <path>` on login.";
+                        type = lib.types.nullOr lib.types.path;
                       };
 
                       keybinds = lib.mkOption {

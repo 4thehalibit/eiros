@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   eiros_xdg_portal = config.eiros.system.desktop_environment.xdg_portal;
 in
@@ -17,11 +12,6 @@ in
   };
 
   config = lib.mkIf eiros_xdg_portal.enable {
-    environment.systemPackages = [
-      pkgs.grim
-      pkgs.slurp
-    ];
-
     xdg.portal = {
       enable = true;
 

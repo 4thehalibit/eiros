@@ -57,6 +57,42 @@ in
         };
       };
     };
+    enable_audio_wavelength = lib.mkOption {
+      default = false;
+      description = "Enable the cava audio visualizer in DMS.";
+      type = lib.types.bool;
+    };
+
+    enable_calendar_events = lib.mkOption {
+      default = false;
+      description = "Enable CalDAV calendar synchronization in DMS (requires khal/vdirsyncer setup).";
+      type = lib.types.bool;
+    };
+
+    enable_clipboard_paste = lib.mkOption {
+      default = true;
+      description = "Enable clipboard history paste in DMS. Requires wtype.";
+      type = lib.types.bool;
+    };
+
+    enable_dynamic_theming = lib.mkOption {
+      default = true;
+      description = "Enable wallpaper-based automatic theming via matugen (GTK, Qt, terminals, Firefox, VSCode).";
+      type = lib.types.bool;
+    };
+
+    enable_system_monitoring = lib.mkOption {
+      default = true;
+      description = "Enable system monitoring widget in DMS (CPU, RAM, GPU, temps, processes).";
+      type = lib.types.bool;
+    };
+
+    enable_vpn = lib.mkOption {
+      default = false;
+      description = "Enable VPN management widget in DMS.";
+      type = lib.types.bool;
+    };
+
     search.enable = lib.mkOption {
       default = true;
       description = "Enable DankSearch.";
@@ -66,8 +102,17 @@ in
 
   config = lib.mkMerge [
     (lib.mkIf eiros_dms.enable {
+      environment.systemPackages = lib.optionals eiros_dms.enable_clipboard_paste [ pkgs.wtype ];
+
       programs.dank-material-shell = {
         enable = true;
+
+        enableAudioWavelength = eiros_dms.enable_audio_wavelength;
+        enableCalendarEvents = eiros_dms.enable_calendar_events;
+        enableClipboardPaste = eiros_dms.enable_clipboard_paste;
+        enableDynamicTheming = eiros_dms.enable_dynamic_theming;
+        enableSystemMonitoring = eiros_dms.enable_system_monitoring;
+        enableVPN = eiros_dms.enable_vpn;
 
         greeter = lib.mkIf eiros_dms.greeter.enable {
           enable = true;
