@@ -31,6 +31,7 @@ let
     lib.optionalAttrs config.eiros.system.desktop_environment.dank_material_shell.enable {
       "exec-once" =
         [
+		"dms run"
           "udiskie &"
           "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=wlroots"
         ];
