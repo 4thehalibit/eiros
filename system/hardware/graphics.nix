@@ -111,6 +111,18 @@ in
         assertion = !(prime_offload_enabled && prime_sync_enabled);
         message = "NVIDIA PRIME: offload and sync cannot both be enabled; choose one.";
       }
+      {
+        assertion =
+          eiros_nvidia.prime.intel_bus_id == null
+          || lib.match "PCI:[0-9]+:[0-9]+:[0-9]+" eiros_nvidia.prime.intel_bus_id != null;
+        message = "eiros.system.hardware.graphics.nvidia.prime.intel_bus_id must be in 'PCI:X:Y:Z' format (e.g. \"PCI:0:2:0\").";
+      }
+      {
+        assertion =
+          eiros_nvidia.prime.nvidia_bus_id == null
+          || lib.match "PCI:[0-9]+:[0-9]+:[0-9]+" eiros_nvidia.prime.nvidia_bus_id != null;
+        message = "eiros.system.hardware.graphics.nvidia.prime.nvidia_bus_id must be in 'PCI:X:Y:Z' format (e.g. \"PCI:1:0:0\").";
+      }
     ];
 
     environment = {

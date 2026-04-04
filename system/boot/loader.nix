@@ -16,6 +16,12 @@ in
         description = "Enable EFI boot support.";
         type = lib.types.bool;
       };
+
+      sys_mount_point = lib.mkOption {
+        default = "/boot";
+        description = "Mount point of the EFI system partition (e.g. \"/boot\" or \"/boot/efi\").";
+        type = lib.types.str;
+      };
     };
 
     systemd_boot = {
@@ -49,7 +55,7 @@ in
       loader = {
         efi = {
           canTouchEfiVariables = eiros_boot.loader.efi.can_touch_efi_vars;
-          efiSysMountPoint = "/boot";
+          efiSysMountPoint = eiros_boot.loader.efi.sys_mount_point;
         };
 
         systemd-boot = {

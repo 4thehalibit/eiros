@@ -1,31 +1,8 @@
 { config, lib, ... }:
 
 let
-  mangowc_generator = lib.generators.toKeyValue {
-    mkKeyValue =
-      name: value:
-      if lib.isList value then
-        lib.concatMapStringsSep "\n" (v: "${name}=${toString v}") value
-      else
-        "${name}=${toString value}";
-  };
-
-  to_string_list =
-    v:
-    if v == null then
-      [ ]
-    else if lib.isList v then
-      map toString v
-    else
-      [ (toString v) ];
-
-  make_bind_line =
-    kb:
-    let
-      modifier_keys_str = lib.concatStringsSep "+" kb.modifier_keys;
-      command_args_str = if kb.command_arguments == null then "" else kb.command_arguments;
-    in
-    "${modifier_keys_str},${kb.key_symbol},${kb.mangowc_command},${command_args_str}";
+  helpers = import ../resources/nix/mangowc_helpers.nix lib;
+  inherit (helpers) mangowc_generator make_mangowc_config keybind_submodule;
 
   mangowc_systemd_exec_once =
     let
@@ -53,27 +30,12 @@ let
       "exec-once" = [ "dms ipc call wallpaper set ${mangowc_cfg.wallpaper}" ];
     };
 
-  make_mangowc_config =
+  make_user_mangowc_config =
     mangowc_cfg:
-    let
-      extra_bind_attrs = builtins.foldl' (
-        acc: kb:
-        let
-          flags_str = lib.concatStrings (kb.flag_modifiers or [ ]);
-          bind_key = "bind" + flags_str;
-          line = make_bind_line kb;
-          previous = acc.${bind_key} or [ ];
-        in
-        acc // { ${bind_key} = previous ++ [ line ]; }
-      ) { } (lib.attrValues mangowc_cfg.keybinds);
-    in
-    mangowc_cfg.settings
+    make_mangowc_config mangowc_cfg
     // mangowc_systemd_exec_once
     // dms_exec_once
-    // wallpaper_exec_once mangowc_cfg
-    // lib.mapAttrs (
-      name: lines: (to_string_list (mangowc_cfg.settings.${name} or [ ])) ++ lines
-    ) extra_bind_attrs;
+    // wallpaper_exec_once mangowc_cfg;
 in
 {
   options = {
@@ -122,55 +84,7 @@ in
                       keybinds = lib.mkOption {
                         default = { };
                         description = "Structured MangoWC keybind declarations.";
-                        type = lib.types.attrsOf (
-                          lib.types.submodule (
-                            { name, ... }:
-                            {
-                              options = {
-                                command_arguments = lib.mkOption {
-                                  default = null;
-                                  description = "Optional command arguments.";
-                                  type = lib.types.nullOr lib.types.str;
-                                };
-
-                                flag_modifiers = lib.mkOption {
-                                  default = [ ];
-                                  description = ''
-                                    MangoWC bind flags:
-                                    l (lock), r (release), s (keysym).
-                                  '';
-                                  example = [
-                                    "l"
-                                    "s"
-                                  ];
-                                  type = lib.types.listOf (
-                                    lib.types.enum [
-                                      "l"
-                                      "r"
-                                      "s"
-                                    ]
-                                  );
-                                };
-
-                                key_symbol = lib.mkOption {
-                                  description = "Key symbol such as \"Return\", \"Q\", or \"space\".";
-                                  type = lib.types.str;
-                                };
-
-                                mangowc_command = lib.mkOption {
-                                  description = "MangoWC command (e.g., \"spawn\", \"killclient\", \"quit\").";
-                                  type = lib.types.str;
-                                };
-
-                                modifier_keys = lib.mkOption {
-                                  default = [ ];
-                                  description = "Modifier keys joined using '+', e.g., [\"SUPER\" \"SHIFT\"].";
-                                  type = lib.types.listOf lib.types.str;
-                                };
-                              };
-                            }
-                          )
-                        );
+                        type = lib.types.attrsOf keybind_submodule;
                       };
 
                       settings = lib.mkOption {
@@ -237,7 +151,7 @@ in
           ".config/mango/config.conf" = {
             clobber = lib.mkDefault mangowc_cfg.clobber_home_directory;
             generator = mangowc_generator;
-            value = make_mangowc_config mangowc_cfg;
+            value = make_user_mangowc_config mangowc_cfg;
           };
         };
       }

@@ -42,6 +42,13 @@ in
   };
 
   config = lib.mkIf eiros_logind.enable {
+    assertions = [
+      {
+        assertion = eiros_logind.idle_timeout_sec > 0;
+        message = "eiros.system.hardware.logind.idle_timeout_sec must be greater than 0.";
+      }
+    ];
+
     services.logind.settings.Login = {
       HandleLidSwitch = eiros_logind.lid_switch;
       HandleLidSwitchExternalPower = eiros_logind.lid_switch_external_power;
