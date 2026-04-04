@@ -9,6 +9,7 @@
       hjem,
       mango,
       nixpkgs,
+      nixvim,
       self,
       ...
     }:
@@ -21,6 +22,7 @@
           hjem
           mango
           nixpkgs
+          nixvim
           ;
       };
 
@@ -35,6 +37,7 @@
           eiros_users.nixosModules.default
           hjem.nixosModules.default
           mango.nixosModules.mango
+          nixvim.nixosModules.nixvim
         ]
         ++ (import_modules ./system)
         ++ (import_modules ./users);
@@ -70,5 +73,10 @@
     };
 
     nixpkgs.url = "github:nixos/nixpkgs/master";
+
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 }
