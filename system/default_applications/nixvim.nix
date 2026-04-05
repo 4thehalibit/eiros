@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 let
   eiros_neovim = config.eiros.system.default_applications.neovim;
   eiros_nixvim = config.eiros.system.default_applications.nixvim;
@@ -50,6 +50,75 @@ in
       vimAlias = eiros_neovim.vim_alias.enable;
 
       nixpkgs.useGlobalPackages = eiros_nixvim.use_global_packages;
+
+      # --- Editor behavior ---
+      opts = {
+        number = true;
+        relativenumber = true;
+        clipboard = [ "unnamedplus" ];
+        undofile = true;
+        autowriteall = true;
+        tabstop = 2;
+        shiftwidth = 2;
+        expandtab = true;
+        splitright = true;
+        splitbelow = true;
+        cursorline = true;
+      };
+
+      # --- UI plugins ---
+      plugins = {
+        nvim-web-devicons.enable = true;
+
+        lualine.enable = true;
+
+        bufferline.enable = true;
+
+        which-key.enable = true;
+
+        indent-blankline.enable = true;
+
+        # --- Navigation / editing ---
+        telescope.enable = true;
+
+        neo-tree.enable = true;
+
+        gitsigns.enable = true;
+
+        comment.enable = true;
+
+        nvim-autopairs.enable = true;
+
+        # --- LSP / completion ---
+        treesitter = {
+          enable = true;
+          grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+            nix
+            lua
+            bash
+            json
+            yaml
+            toml
+            markdown
+            markdown_inline
+          ];
+        };
+
+        lspconfig.enable = true;
+
+        cmp = {
+          enable = true;
+          autoEnableSources = true;
+          settings.sources = [
+            { name = "nvim_lsp"; }
+            { name = "luasnip"; }
+            { name = "buffer"; }
+            { name = "path"; }
+          ];
+        };
+
+        luasnip.enable = true;
+      };
 
       extraPlugins = eiros_nixvim.extra_plugins;
       extraConfigLuaPre = eiros_nixvim.extra_config_lua_pre;
