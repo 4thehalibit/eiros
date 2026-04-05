@@ -43,6 +43,8 @@ in
   };
 
   config = lib.mkIf (eiros_neovim.enable && eiros_nixvim.enable) {
+    programs.neovim.enable = lib.mkForce false;
+
     programs.nixvim = {
       enable = true;
       defaultEditor = eiros_neovim.default_editor;
