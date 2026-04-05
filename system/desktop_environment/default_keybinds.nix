@@ -52,6 +52,17 @@ let
     reload_configuration   = { modifier_keys = [ "SUPER" "SHIFT" ]; flag_modifiers = [ "s" ]; key_symbol = "r";      mangowc_command = "reload_config";        command_arguments = null; };
   };
 
+  media_binds = {
+    volume_up       = { modifier_keys = [ ]; flag_modifiers = [ "s" ]; key_symbol = "XF86AudioRaiseVolume";  mangowc_command = "spawn_shell"; command_arguments = "pactl set-sink-volume @DEFAULT_SINK@ +5%"; };
+    volume_down     = { modifier_keys = [ ]; flag_modifiers = [ "s" ]; key_symbol = "XF86AudioLowerVolume";  mangowc_command = "spawn_shell"; command_arguments = "pactl set-sink-volume @DEFAULT_SINK@ -5%"; };
+    volume_mute     = { modifier_keys = [ ]; flag_modifiers = [ "s" ]; key_symbol = "XF86AudioMute";         mangowc_command = "spawn_shell"; command_arguments = "pactl set-sink-mute @DEFAULT_SINK@ toggle"; };
+    media_play      = { modifier_keys = [ ]; flag_modifiers = [ "s" ]; key_symbol = "XF86AudioPlay";         mangowc_command = "spawn_shell"; command_arguments = "playerctl play-pause"; };
+    media_next      = { modifier_keys = [ ]; flag_modifiers = [ "s" ]; key_symbol = "XF86AudioNext";         mangowc_command = "spawn_shell"; command_arguments = "playerctl next"; };
+    media_prev      = { modifier_keys = [ ]; flag_modifiers = [ "s" ]; key_symbol = "XF86AudioPrev";         mangowc_command = "spawn_shell"; command_arguments = "playerctl previous"; };
+    brightness_up   = { modifier_keys = [ ]; flag_modifiers = [ "s" ]; key_symbol = "XF86MonBrightnessUp";   mangowc_command = "spawn_shell"; command_arguments = "brightnessctl set +10%"; };
+    brightness_down = { modifier_keys = [ ]; flag_modifiers = [ "s" ]; key_symbol = "XF86MonBrightnessDown"; mangowc_command = "spawn_shell"; command_arguments = "brightnessctl set 10%-"; };
+  };
+
   dms_binds = lib.optionalAttrs dms_enabled {
     launch_spotlight = { modifier_keys = [ "SUPER" ];         flag_modifiers = [ "s" ]; key_symbol = "d";      mangowc_command = "spawn_shell"; command_arguments = "dms ipc call spotlight toggle"; };
     lock_screen      = { modifier_keys = [ "SUPER" ];         flag_modifiers = [ "s" ]; key_symbol = "Escape"; mangowc_command = "spawn_shell"; command_arguments = "dms ipc call lock lock"; };
@@ -70,5 +81,5 @@ in
   };
 
   config.eiros.system.desktop_environment.mangowc.default_keybinds.keybinds =
-    view_tag_binds // move_to_tag_binds // directional_binds // static_binds // dms_binds;
+    view_tag_binds // move_to_tag_binds // directional_binds // static_binds // media_binds // dms_binds;
 }

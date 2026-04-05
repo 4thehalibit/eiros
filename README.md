@@ -169,6 +169,19 @@ Applied to all users when `mangowc.default_keybinds.enable = true` (the default)
 | `Super + T` | Launch terminal (Ghostty) |
 | `Super + F` | Launch file browser (Ghostty + Yazi) |
 
+### Media and Brightness
+
+| Keybind | Action |
+|---|---|
+| `XF86AudioRaiseVolume` | Volume up 5% |
+| `XF86AudioLowerVolume` | Volume down 5% |
+| `XF86AudioMute` | Toggle mute |
+| `XF86AudioPlay` | Play / pause |
+| `XF86AudioNext` | Next track |
+| `XF86AudioPrev` | Previous track |
+| `XF86MonBrightnessUp` | Brightness up 10% |
+| `XF86MonBrightnessDown` | Brightness down 10% |
+
 ### DMS Integration
 
 These keybinds are only active when `eiros.system.desktop_environment.dank_material_shell.enable = true`.
