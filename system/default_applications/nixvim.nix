@@ -68,7 +68,7 @@ in
 
       # --- UI plugins ---
       plugins = {
-        nvim-web-devicons.enable = true;
+        web-devicons.enable = true;
 
         lualine.enable = true;
 
