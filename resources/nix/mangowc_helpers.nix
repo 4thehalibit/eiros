@@ -12,7 +12,7 @@ let
   make_bind_line =
     kb:
     let
-      modifier_keys_str = lib.concatStringsSep "+" kb.modifier_keys;
+      modifier_keys_str = if kb.modifier_keys == [ ] then "none" else lib.concatStringsSep "+" kb.modifier_keys;
       command_args_str = if kb.command_arguments == null then "" else kb.command_arguments;
     in
     "${modifier_keys_str},${kb.key_symbol},${kb.mangowc_command},${command_args_str}";
