@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 let
@@ -30,7 +29,6 @@ in
   };
   config = lib.mkIf eiros_fingerprint.enable {
     services.fprintd.enable = true;
-
     security.pam.services =
       builtins.listToAttrs (
         map (service_name: {
@@ -39,7 +37,7 @@ in
         }) eiros_fingerprint.pam_services
       )
       // {
-        greetd.fprintAuth = lib.mkOverride 0 false;
+        greetd.enableGnomeKeyring = lib.mkForce false;
       };
   };
 }
