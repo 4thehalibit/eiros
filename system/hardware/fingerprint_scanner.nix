@@ -27,17 +27,16 @@ in
   };
 
   config = lib.mkIf eiros_fingerprint.enable {
-    services.fprintd.enable = true;
+    services.fprintd = {
+      enable = true;
+      global = false;
+    };
 
-    security.pam.services =
-      builtins.listToAttrs (
-        map (service_name: {
-          name = service_name;
-          value.fprintd = true;
-        }) eiros_fingerprint.pam_services
-      )
-      // {
-        greetd.fprintAuth = false;
-      };
+    security.pam.services = builtins.listToAttrs (
+      map (service_name: {
+        name = service_name;
+        value.fprintAuth = true;
+      }) eiros_fingerprint.pam_services
+    );
   };
 }
