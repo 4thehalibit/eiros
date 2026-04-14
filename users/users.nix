@@ -24,7 +24,6 @@ let
         (lib.optionals (config.eiros.system.desktop_environment.mangowc.enable && mangowc_systemd.enable) [
           "systemctl --user import-environment ${vars_str}"
           "dbus-update-activation-environment --systemd ${vars_str}"
-          "gnome-keyring-daemon --start --components=secrets"
         ])
         ++ (lib.optionals config.eiros.system.desktop_environment.dank_material_shell.enable [
           "dms run"
@@ -33,10 +32,6 @@ let
         ++ (lib.optional (
           mangowc_cfg.wallpaper != null
         ) "dms ipc call wallpaper set ${mangowc_cfg.wallpaper}");
-
-      _ = builtins.trace "DEBUG base attrs: ${builtins.toJSON (builtins.attrNames base)}" null;
-      __ = builtins.trace "DEBUG base.exec-once: ${builtins.toJSON (base."exec-once" or "MISSING")}" null;
-      ___ = builtins.trace "DEBUG extra_exec_once: ${builtins.toJSON extra_exec_once}" null;
     in
     base
     // {
@@ -100,9 +95,7 @@ in
                       };
 
                       settings = lib.mkOption {
-                        default = {
-                          "exec-once" = [ "echo test" ];
-                        };
+                        default = { };
                         description = "Raw MangoWC settings written as key=value pairs.";
                         type = lib.types.attrsOf (
                           lib.types.oneOf [
