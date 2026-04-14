@@ -29,13 +29,8 @@ in
   };
   config = lib.mkIf eiros_fingerprint.enable {
     services.fprintd.enable = true;
-
-    security.pam.services = builtins.foldl' (
-      acc: service_name:
-      acc
-      // {
-        ${service_name}.fprintAuth = true;
-      }
-    ) { greetd.fprintAuth = false; } eiros_fingerprint.pam_services;
+    security.pam.services.login.fprintAuth = true;
+    security.pam.services.sudo.fprintAuth = true;
+    security.pam.services.greetd.fprintAuth = false;
   };
 }
