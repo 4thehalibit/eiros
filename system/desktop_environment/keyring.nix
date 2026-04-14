@@ -21,7 +21,6 @@ in
 
     pam_services = lib.mkOption {
       default = [
-        "greetd"
         "login"
       ];
       description = "PAM services to enable GNOME Keyring integration for.";
