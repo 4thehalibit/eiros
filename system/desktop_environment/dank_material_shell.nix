@@ -122,6 +122,12 @@ in
           xkb_variant = eiros_dms.greeter.mango.keyboard_variant;
         };
 
+      console.keyMap = lib.mkDefault (
+        if eiros_dms.greeter.mango.keyboard_variant == ""
+        then eiros_dms.greeter.mango.keyboard_layout
+        else "${eiros_dms.greeter.mango.keyboard_layout}-${eiros_dms.greeter.mango.keyboard_variant}"
+      );
+
       environment.systemPackages = lib.optionals eiros_dms.enable_clipboard_paste [ pkgs.wtype ];
 
       programs.dank-material-shell = {
