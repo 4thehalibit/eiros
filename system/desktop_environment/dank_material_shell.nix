@@ -125,13 +125,14 @@ in
 
       environment.systemPackages = lib.optionals eiros_dms.enable_clipboard_paste [ pkgs.wtype ];
 
-      environment.variables =
-        lib.mkIf eiros_dms.greeter.enable {
+      environment.variables = lib.mkIf eiros_dms.greeter.enable (
+        {
           XKB_DEFAULT_LAYOUT = eiros_dms.greeter.mango.keyboard_layout;
         }
         // lib.optionalAttrs (eiros_dms.greeter.mango.keyboard_variant != "") {
           XKB_DEFAULT_VARIANT = eiros_dms.greeter.mango.keyboard_variant;
-        };
+        }
+      );
 
       programs.dank-material-shell = {
         enable = true;
