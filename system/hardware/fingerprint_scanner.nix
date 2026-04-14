@@ -31,6 +31,6 @@ in
     services.fprintd.enable = true;
     security.pam.services.login.fprintAuth = true;
     security.pam.services.sudo.fprintAuth = true;
-    security.pam.services.greetd.fprintAuth = false;
+    security.pam.services.greetd.rules.auth.fprintd.enable = false;
   };
 }
