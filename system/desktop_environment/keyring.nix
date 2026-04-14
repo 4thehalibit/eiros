@@ -41,6 +41,10 @@ in
   };
 
   config = lib.mkIf eiros_keyring.enable {
+    environment.interactiveShellInit = lib.mkIf eiros_keyring.enable ''
+      export GNOME_KEYRING_CONTROL="/run/user/$(id -u)/keyring"
+    '';
+
     programs = {
       seahorse = {
         enable = eiros_keyring.seahorse.enable;
