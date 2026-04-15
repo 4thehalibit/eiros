@@ -1,6 +1,8 @@
 { config, lib, pkgs, ... }:
 let
   eiros_zsh = config.eiros.system.default_applications.zsh;
+  eiros_eza = config.eiros.system.default_applications.eza;
+  eiros_bat = config.eiros.system.default_applications.bat;
 in
 {
   options.eiros.system.default_applications.zsh = {
@@ -49,10 +51,13 @@ in
 
       plugins = lib.mkOption {
         default = [
-          "git"
-          "sudo"
+          "colored-man-pages"
+          "copypath"
           "direnv"
+          "extract"
+          "git"
           "history"
+          "sudo"
         ];
         description = "Oh My Zsh plugins to enable.";
         type = lib.types.listOf lib.types.str;
@@ -68,6 +73,21 @@ in
 
       autosuggestions.enable = eiros_zsh.autosuggestions.enable;
       syntaxHighlighting.enable = eiros_zsh.syntax_highlighting.enable;
+
+      histSize = 50000;
+      setOptions = [ "HIST_IGNORE_DUPS" "HIST_IGNORE_SPACE" "SHARE_HISTORY" ];
+
+      shellAliases = lib.mkMerge [
+        (lib.mkIf eiros_eza.enable {
+          ls   = "eza --icons";
+          ll   = "eza -lh --icons --git";
+          la   = "eza -lah --icons --git";
+          tree = "eza --tree --icons";
+        })
+        (lib.mkIf eiros_bat.enable {
+          cat = "bat";
+        })
+      ];
 
       ohMyZsh = lib.mkIf eiros_zsh.oh_my_zsh.enable {
         enable = true;

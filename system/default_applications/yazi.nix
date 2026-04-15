@@ -41,6 +41,12 @@ in
       };
     };
 
+    shell_integration.enable = lib.mkOption {
+      default = true;
+      description = "Add a `y` shell function that opens yazi and cd's to the last directory on exit.";
+      type = lib.types.bool;
+    };
+
     package = lib.mkOption {
       default = pkgs.yazi;
       description = "Yazi package to install.";
@@ -80,5 +86,16 @@ in
       enable = true;
       package = eiros_yazi.package;
     };
+
+    programs.zsh.interactiveShellInit = lib.mkIf eiros_yazi.shell_integration.enable ''
+      function y() {
+        local tmp=$(mktemp -t "yazi-cwd.XXXXXX")
+        yazi "$@" --cwd-file="$tmp"
+        if cwd=$(cat "$tmp") && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+          cd "$cwd"
+        fi
+        rm -f "$tmp"
+      }
+    '';
   };
 }
