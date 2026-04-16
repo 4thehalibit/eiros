@@ -12,15 +12,8 @@ let
     [
       "--ozone-platform=wayland"
 
-      "--enable-features=UseOzonePlatform,ExternalProtocolDialog,Vulkan"
+      "--enable-features=UseOzonePlatform,ExternalProtocolDialog"
       "--disable-features=IntentPicker,DelegatedCompositing,WaylandLinuxDrmSyncobj"
-
-      # Force ANGLE to Vulkan (no OpenGL fallback)
-      "--use-angle=vulkan"
-
-      # Vulkan stability fixes
-      "--disable-zero-copy"
-      "--num-raster-threads=1"
     ]
     # Disables Chromium's GPU process sandbox. This is a security regression but
     # may be required to work around rendering issues with certain NVIDIA driver
