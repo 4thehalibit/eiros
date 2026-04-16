@@ -10,10 +10,12 @@ in
       type = lib.types.bool;
     };
 
-    enable_ssh_support = lib.mkOption {
-      default = false;
-      description = "Use gpg-agent as the SSH agent (replaces ssh-agent with GPG-backed SSH keys).";
-      type = lib.types.bool;
+    ssh_support = {
+      enable = lib.mkOption {
+        default = false;
+        description = "Use gpg-agent as the SSH agent (replaces ssh-agent with GPG-backed SSH keys).";
+        type = lib.types.bool;
+      };
     };
 
     pinentry_flavor = lib.mkOption {
@@ -26,7 +28,7 @@ in
   config = lib.mkIf eiros_gpg.enable {
     programs.gnupg.agent = {
       enable = true;
-      enableSSHSupport = eiros_gpg.enable_ssh_support;
+      enableSSHSupport = eiros_gpg.ssh_support.enable;
       pinentryPackage = lib.mkDefault (
         if eiros_gpg.pinentry_flavor == "gnome3" then
           pkgs.pinentry-gnome3

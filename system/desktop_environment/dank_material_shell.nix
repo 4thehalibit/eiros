@@ -144,40 +144,57 @@ in
       };
     };
 
-    enable_audio_wavelength = lib.mkOption {
-      default = false;
-      description = "Enable the cava audio visualizer in DMS.";
-      type = lib.types.bool;
+    # ---- DMS package feature flags ----------------------------------------
+    # These toggles control optional capabilities bundled with dank-material-shell.
+    # They map directly to the DMS module's enableAudioWavelength / enableVPN /
+    # etc. options and are distinct from the submodule config above.
+
+    audio_wavelength = {
+      enable = lib.mkOption {
+        default = false;
+        description = "Enable the cava audio visualizer in DMS.";
+        type = lib.types.bool;
+      };
     };
 
-    enable_calendar_events = lib.mkOption {
-      default = false;
-      description = "Enable CalDAV calendar synchronization in DMS (requires khal/vdirsyncer setup).";
-      type = lib.types.bool;
+    calendar_events = {
+      enable = lib.mkOption {
+        default = false;
+        description = "Enable CalDAV calendar synchronization in DMS (requires khal/vdirsyncer setup).";
+        type = lib.types.bool;
+      };
     };
 
-    enable_clipboard_paste = lib.mkOption {
-      default = true;
-      description = "Enable clipboard history paste in DMS. Requires wtype.";
-      type = lib.types.bool;
+    clipboard_paste = {
+      enable = lib.mkOption {
+        default = true;
+        description = "Enable clipboard history paste in DMS. Requires wtype.";
+        type = lib.types.bool;
+      };
     };
 
-    enable_dynamic_theming = lib.mkOption {
-      default = true;
-      description = "Enable wallpaper-based automatic theming via matugen (GTK, Qt, terminals, Firefox, VSCode).";
-      type = lib.types.bool;
+    dynamic_theming = {
+      enable = lib.mkOption {
+        default = true;
+        description = "Enable wallpaper-based automatic theming via matugen (GTK, Qt, terminals, Firefox, VSCode).";
+        type = lib.types.bool;
+      };
     };
 
-    enable_system_monitoring = lib.mkOption {
-      default = true;
-      description = "Enable system monitoring widget in DMS (CPU, RAM, GPU, temps, processes).";
-      type = lib.types.bool;
+    system_monitoring = {
+      enable = lib.mkOption {
+        default = true;
+        description = "Enable system monitoring widget in DMS (CPU, RAM, GPU, temps, processes).";
+        type = lib.types.bool;
+      };
     };
 
-    enable_vpn = lib.mkOption {
-      default = false;
-      description = "Enable VPN management widget in DMS.";
-      type = lib.types.bool;
+    vpn = {
+      enable = lib.mkOption {
+        default = false;
+        description = "Enable VPN management widget in DMS.";
+        type = lib.types.bool;
+      };
     };
 
     search = {
@@ -212,7 +229,7 @@ in
         xkb_rules_variant = eiros_dms.greeter.mango.keyboard_variant;
       };
 
-      environment.systemPackages = lib.optionals eiros_dms.enable_clipboard_paste [ pkgs.wtype ];
+      environment.systemPackages = lib.optionals eiros_dms.clipboard_paste.enable [ pkgs.wtype ];
 
       environment.variables = lib.mkIf eiros_dms.greeter.enable (
         {
@@ -226,12 +243,12 @@ in
       programs.dank-material-shell = {
         enable = true;
 
-        enableAudioWavelength = eiros_dms.enable_audio_wavelength;
-        enableCalendarEvents = eiros_dms.enable_calendar_events;
-        enableClipboardPaste = eiros_dms.enable_clipboard_paste;
-        enableDynamicTheming = eiros_dms.enable_dynamic_theming;
-        enableSystemMonitoring = eiros_dms.enable_system_monitoring;
-        enableVPN = eiros_dms.enable_vpn;
+        enableAudioWavelength = eiros_dms.audio_wavelength.enable;
+        enableCalendarEvents = eiros_dms.calendar_events.enable;
+        enableClipboardPaste = eiros_dms.clipboard_paste.enable;
+        enableDynamicTheming = eiros_dms.dynamic_theming.enable;
+        enableSystemMonitoring = eiros_dms.system_monitoring.enable;
+        enableVPN = eiros_dms.vpn.enable;
 
         plugins = eiros_dms.plugins;
 

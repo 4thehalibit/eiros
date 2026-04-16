@@ -22,10 +22,12 @@ in
       type = lib.types.bool;
     };
 
-    enable_32_bit = lib.mkOption {
-      default = true;
-      description = "Enable 32-bit graphics libraries (for 32-bit applications).";
-      type = lib.types.bool;
+    bits_32 = {
+      enable = lib.mkOption {
+        default = true;
+        description = "Enable 32-bit graphics libraries (for 32-bit applications).";
+        type = lib.types.bool;
+      };
     };
 
     nvidia = {
@@ -35,10 +37,12 @@ in
         type = lib.types.bool;
       };
 
-      enable_container_toolkit = lib.mkOption {
-        default = true;
-        description = "Enable NVIDIA Container Toolkit (for GPU support in containers).";
-        type = lib.types.bool;
+      container_toolkit = {
+        enable = lib.mkOption {
+          default = true;
+          description = "Enable NVIDIA Container Toolkit (for GPU support in containers).";
+          type = lib.types.bool;
+        };
       };
 
       open.enable = lib.mkOption {
@@ -47,10 +51,12 @@ in
         type = lib.types.bool;
       };
 
-      enable_nvidia_settings = lib.mkOption {
-        default = true;
-        description = "Install the nvidia-settings GUI tool.";
-        type = lib.types.bool;
+      settings = {
+        enable = lib.mkOption {
+          default = true;
+          description = "Install the nvidia-settings GUI tool.";
+          type = lib.types.bool;
+        };
       };
 
       prime = {
@@ -145,7 +151,7 @@ in
       graphics = {
         enable = true;
 
-        enable32Bit = eiros_graphics.enable_32_bit;
+        enable32Bit = eiros_graphics.bits_32.enable;
 
         extraPackages = lib.optionals nvidia_enabled [
           pkgs.egl-wayland
@@ -159,7 +165,7 @@ in
             enable = true;
           };
 
-          nvidiaSettings = eiros_nvidia.enable_nvidia_settings;
+          nvidiaSettings = eiros_nvidia.settings.enable;
           open = eiros_nvidia.open.enable;
         }
         // (lib.optionalAttrs prime_enabled {
@@ -179,7 +185,7 @@ in
         })
       );
 
-      nvidia-container-toolkit = lib.mkIf (nvidia_enabled && eiros_nvidia.enable_container_toolkit) {
+      nvidia-container-toolkit = lib.mkIf (nvidia_enabled && eiros_nvidia.container_toolkit.enable) {
         enable = true;
       };
     };
