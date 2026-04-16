@@ -54,7 +54,7 @@ in
   config = lib.mkIf (eiros_delta.enable && eiros_git.enable) {
     environment.systemPackages = [ pkgs.delta ];
 
-    programs.git.extraConfig = {
+    programs.git.config = [{
       core.pager = "delta";
       interactive.diffFilter = "delta --color-only";
       delta = {
@@ -63,6 +63,6 @@ in
         line-numbers = eiros_delta.line_numbers.enable;
       };
       merge.conflictstyle = "zdiff3";
-    };
+    }];
   };
 }
