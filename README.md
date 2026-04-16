@@ -128,9 +128,7 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.logging.*` | journald retention, rate limiting, vacuum |
 | `eiros.system.time.*` | Timezone, timesync |
 | `eiros.system.language.*` | Locale |
-| `eiros.system.pipewire.*` | PipeWire, ALSA, JACK, PulseAudio compat, RTKit |
-| `eiros.system.easyeffects.*` | PipeWire audio effects and EQ (off by default) |
-| `eiros.system.helvum.*` | PipeWire patchbay GUI (off by default) |
+| `eiros.system.sound.*` | pactl/playerctl keybind tools, PipeWire (ALSA, JACK, PulseAudio compat, RTKit), EasyEffects audio EQ (off by default), Helvum patchbay GUI (off by default) |
 | `eiros.system.earlyoom.*` | Early OOM killer thresholds and process preferences |
 | `eiros.users.*` | User accounts, MangoWC keybinds, wallpaper |
 
