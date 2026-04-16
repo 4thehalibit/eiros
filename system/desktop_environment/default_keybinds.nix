@@ -71,9 +71,13 @@ let
   dms_binds = lib.optionalAttrs dms_enabled {
     launch_spotlight = { modifier_keys = [ "SUPER" ];         flag_modifiers = [ "s" ]; key_symbol = "d";      mangowc_command = "spawn_shell"; command_arguments = "dms ipc call spotlight toggle"; };
     lock_screen      = { modifier_keys = [ "SUPER" ];         flag_modifiers = [ "s" ]; key_symbol = "Escape"; mangowc_command = "spawn_shell"; command_arguments = "dms ipc call lock lock"; };
-    night_mode       = { modifier_keys = [ "SUPER" ];         flag_modifiers = [ "s" ]; key_symbol = "n";      mangowc_command = "spawn_shell"; command_arguments = "dms ipc call night toggle"; };
+    night_mode       = { modifier_keys = [ "SUPER" "SHIFT" ]; flag_modifiers = [ "s" ]; key_symbol = "n";      mangowc_command = "spawn_shell"; command_arguments = "dms ipc call night toggle"; };
+    notifications    = { modifier_keys = [ "SUPER" ];         flag_modifiers = [ "s" ]; key_symbol = "n";      mangowc_command = "spawn_shell"; command_arguments = "dms ipc call notifications toggle"; };
     screenshot       = { modifier_keys = [ "SUPER" "SHIFT" ]; flag_modifiers = [ "s" ]; key_symbol = "s";      mangowc_command = "spawn_shell"; command_arguments = "dms screenshot --no-file"; };
     paste_clipboard  = { modifier_keys = [ "CTRL" "SHIFT" ];  flag_modifiers = [ "s" ]; key_symbol = "v";      mangowc_command = "spawn_shell"; command_arguments = "dms cl paste | wtype -"; };
+    clipboard_toggle = { modifier_keys = [ "SUPER" ];         flag_modifiers = [ "s" ]; key_symbol = "v";      mangowc_command = "spawn_shell"; command_arguments = "dms ipc call clipboard toggle"; };
+    open_settings    = { modifier_keys = [ "SUPER" ];         flag_modifiers = [ "s" ]; key_symbol = "comma";  mangowc_command = "spawn_shell"; command_arguments = "dms ipc call settings toggle"; };
+    wallpaper_next   = { modifier_keys = [ "SUPER" ];         flag_modifiers = [ "s" ]; key_symbol = "y";      mangowc_command = "spawn_shell"; command_arguments = "dms ipc call wallpaper next"; };
   };
 in
 {
