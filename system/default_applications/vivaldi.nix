@@ -14,6 +14,10 @@ let
 
       "--enable-features=UseOzonePlatform,ExternalProtocolDialog"
       "--disable-features=IntentPicker,DelegatedCompositing,WaylandLinuxDrmSyncobj"
+
+      # Prevent GPU raster flickering/tearing on NVIDIA/Wayland
+      "--disable-zero-copy"
+      "--num-raster-threads=1"
     ]
     # Disables Chromium's GPU process sandbox. This is a security regression but
     # may be required to work around rendering issues with certain NVIDIA driver
