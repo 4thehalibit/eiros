@@ -29,13 +29,10 @@ in
   };
 
   config = lib.mkIf eiros_comma.enable {
-    environment.systemPackages =
-      [ pkgs.comma ]
-      ++ lib.optionals eiros_comma.nix_index.enable [ pkgs.nix-index ];
-
-    programs.nix-index = lib.mkIf eiros_comma.nix_index.enable {
-      enable = true;
-      enableZshIntegration = config.eiros.system.default_applications.zsh.enable;
+    programs.nix-index-database = lib.mkIf eiros_comma.nix_index.enable {
+      comma.enable = true;
     };
+
+    environment.systemPackages = lib.optionals (!eiros_comma.nix_index.enable) [ pkgs.comma ];
   };
 }

@@ -8,6 +8,7 @@
       eiros_users,
       hjem,
       mango,
+      nix-index-database,
       nixpkgs,
       nixvim,
       sops-nix,
@@ -22,6 +23,7 @@
           eiros_users
           hjem
           mango
+          nix-index-database
           nixpkgs
           nixvim
           sops-nix
@@ -39,6 +41,7 @@
           eiros_users.nixosModules.default
           hjem.nixosModules.default
           mango.nixosModules.mango
+          nix-index-database.nixosModules.nix-index-database
           nixvim.nixosModules.nixvim
           sops-nix.nixosModules.sops
         ]
@@ -72,6 +75,11 @@
 
     mango = {
       url = "github:DreamMaoMao/mango";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
