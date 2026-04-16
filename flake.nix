@@ -41,7 +41,7 @@
           eiros_users.nixosModules.default
           hjem.nixosModules.default
           mango.nixosModules.mango
-          nix-index-database.nixosModules.nix-index-database
+          nix-index-database.nixosModules.default
           nixvim.nixosModules.nixvim
           sops-nix.nixosModules.sops
         ]
