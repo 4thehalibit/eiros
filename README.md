@@ -11,8 +11,9 @@ The core repo defines the module schemas and defaults. Personal hardware and use
 - **Dank Material Shell** — audio visualizer, clipboard history, dynamic theming, calendar, system monitoring, and search
 - **Home directory management** via [hjem](https://github.com/feel-co/hjem)
 - **Hardware support** — NVIDIA PRIME (offload/sync), Intel/AMD CPU microcode, Bluetooth, printing, fingerprint
-- **Security-first defaults** — UFW firewall enabled, SSH disabled, no password auth over SSH
+- **Security-first defaults** — UFW firewall enabled, SSH disabled, no password auth over SSH, optional sops-nix secret management
 - **Virtualization** — KVM/QEMU, Libvirt, Podman, Distrobox, Virt Manager
+- **Shell toolchain** — zoxide, atuin, delta, lazygit, pay-respects, and optional Zellij multiplexer alongside the existing fzf/yazi/eza/bat/ripgrep stack
 
 ## Directory Structure
 
@@ -117,17 +118,20 @@ All options are under the `eiros.*` namespace:
 |---|---|
 | `eiros.system.hardware.*` | CPU vendor, GPU, power, peripherals, printing, Bluetooth |
 | `eiros.system.boot.*` | Bootloader, kernel params, sysctl tuning, Plymouth theme |
-| `eiros.system.networking.*` | Hostname, DNS, NetworkManager, IWD |
-| `eiros.system.security.*` | Firewall, SSH, GPG, polkit, PAM |
+| `eiros.system.networking.*` | Hostname, DNS, NetworkManager, IWD, Avahi mDNS |
+| `eiros.system.security.*` | Firewall, SSH, GPG, polkit, PAM, sops-nix secrets |
 | `eiros.system.desktop_environment.*` | MangoWC, DMS, XDG portals, keyring, keybind commands |
 | `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld |
-| `eiros.system.default_applications.*` | Neovim/nixvim opts and plugins, Zsh history and options, Vivaldi flags, fzf defaults, Flatpak, mpv, imv, zathura, btop, ncdu, archive tools (zip/p7zip), Nix LSP and formatter |
+| `eiros.system.default_applications.*` | Neovim/nixvim opts and plugins, Zsh history and options, Vivaldi flags, fzf defaults, zoxide smart cd, atuin history, delta git diffs, lazygit TUI, pay-respects command corrector, Zellij multiplexer, Flatpak, mpv, imv, zathura, btop, ncdu, archive tools (zip/p7zip), Nix LSP and formatter |
 | `eiros.system.virtualization.*` | KVM, Podman (DNS, Docker compat), Distrobox |
 | `eiros.system.fonts.*` | Font packages and fontconfig defaults |
 | `eiros.system.logging.*` | journald retention, rate limiting, vacuum |
 | `eiros.system.time.*` | Timezone, timesync |
 | `eiros.system.language.*` | Locale |
 | `eiros.system.pipewire.*` | PipeWire, ALSA, JACK, PulseAudio compat, RTKit |
+| `eiros.system.easyeffects.*` | PipeWire audio effects and EQ (off by default) |
+| `eiros.system.helvum.*` | PipeWire patchbay GUI (off by default) |
+| `eiros.system.earlyoom.*` | Early OOM killer thresholds and process preferences |
 | `eiros.users.*` | User accounts, MangoWC keybinds, wallpaper |
 
 ## Default MangoWC Keybinds
@@ -224,3 +228,4 @@ These keybinds are only active when `eiros.system.desktop_environment.dank_mater
 | `mango` | DreamMaoMao | MangoWC compositor module |
 | `eiros_hardware` | lcleveland/eiros.hardware | Hardware configuration (override with your own) |
 | `eiros_users` | lcleveland/eiros.users | User configuration (override with your own) |
+| `sops-nix` | Mic92/sops-nix | Declarative secret management via SOPS + age/GPG |

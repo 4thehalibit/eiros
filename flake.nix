@@ -10,6 +10,7 @@
       mango,
       nixpkgs,
       nixvim,
+      sops-nix,
       self,
       ...
     }:
@@ -23,6 +24,7 @@
           mango
           nixpkgs
           nixvim
+          sops-nix
           ;
       };
 
@@ -38,6 +40,7 @@
           hjem.nixosModules.default
           mango.nixosModules.mango
           nixvim.nixosModules.nixvim
+          sops-nix.nixosModules.sops
         ]
         ++ (import_modules ./system)
         ++ (import_modules ./users);
@@ -76,6 +79,11 @@
 
     nixvim = {
       url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
