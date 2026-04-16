@@ -120,10 +120,10 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.hardware.*` | CPU vendor, GPU, power, peripherals, printing, Bluetooth |
 | `eiros.system.boot.*` | Bootloader, kernel params, sysctl tuning, Plymouth theme |
 | `eiros.system.networking.*` | Hostname, DNS, NetworkManager, IWD, Avahi mDNS |
-| `eiros.system.security.*` | Firewall, SSH, GPG, polkit, PAM, sops-nix secrets |
+| `eiros.system.security.*` | Firewall, SSH, GPG, polkit, polkit authentication agent, PAM, sops-nix secrets |
 | `eiros.system.desktop_environment.*` | MangoWC, DMS, XDG portals, keyring, keybind commands |
 | `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld |
-| `eiros.system.default_applications.*` | Neovim/nixvim opts and plugins, Zsh history and options, Vivaldi flags, fzf defaults, zoxide smart cd, atuin history, delta git diffs, lazygit TUI, pay-respects command corrector, Zellij multiplexer, Flatpak, mpv, imv, zathura, btop, ncdu, archive tools (zip/p7zip), Nix LSP and formatter |
+| `eiros.system.default_applications.*` | Neovim/nixvim opts and plugins, Zsh history and options, Vivaldi flags, fzf defaults, zoxide smart cd, atuin history, delta git diffs, lazygit TUI, pay-respects command corrector, Zellij multiplexer, Flatpak, mpv, imv, zathura, btop, ncdu, archive tools (zip/p7zip), MangoHUD performance overlay, GStreamer multimedia codecs, Nix LSP and formatter |
 | `eiros.system.virtualization.*` | KVM, Podman (DNS, Docker compat), Distrobox |
 | `eiros.system.fonts.*` | Font packages and fontconfig defaults |
 | `eiros.system.logging.*` | journald retention, rate limiting, vacuum |
