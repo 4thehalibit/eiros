@@ -1,3 +1,4 @@
+# Configures the system time zone and enables systemd-timesyncd for NTP sync.
 { config, lib, ... }:
 let
   eiros_time = config.eiros.system.time;
@@ -7,12 +8,14 @@ in
     time_zone = lib.mkOption {
       default = "America/Chicago";
       description = "The system time zone. Must be a valid IANA timezone (e.g. \"America/Chicago\", \"Europe/London\").";
+      example = "Europe/London";
       type = lib.types.str;
     };
 
     timesync.enable = lib.mkOption {
       default = true;
       description = "Enable time synchronization (systemd-timesyncd).";
+      example = false;
       type = lib.types.bool;
     };
   };

@@ -1,3 +1,4 @@
+# Declares per-user accounts, groups, and MangoWC home configurations managed via hjem.
 { config, lib, ... }:
 
 let
@@ -6,6 +7,8 @@ let
 
   default_keybinds = config.eiros.system.desktop_environment.mangowc.default_keybinds.keybinds;
 
+  # Merges system default keybinds with per-user overrides, then injects systemd env-import
+  # and DMS exec-once entries so MangoWC starts with the correct session environment.
   make_user_mangowc_config =
     mangowc_cfg:
     let
@@ -44,6 +47,24 @@ in
     eiros.users = lib.mkOption {
       default = { };
       description = "Per-user configuration for the eiros system, including MangoWC and home management.";
+      example = lib.literalExpression ''
+        {
+          alice = {
+            extra_groups = [ "wheel" "audio" ];
+            mangowc = {
+              wallpaper = /home/alice/wallpaper.jpg;
+              keybinds = {
+                open_browser = {
+                  modifier_keys = [ "SUPER" ];
+                  key_symbol = "b";
+                  mangowc_command = "spawn";
+                  command_arguments = "vivaldi";
+                };
+              };
+            };
+          };
+        }
+      '';
       type = lib.types.attrsOf (
         lib.types.submodule (
           { name, ... }:
@@ -56,48 +77,70 @@ in
                   "libvirtd"
                 ];
                 description = "Additional groups for the user.";
+                example = [ "wheel" "audio" "video" ];
                 type = lib.types.listOf lib.types.str;
               };
 
               initial_password = lib.mkOption {
                 default = name;
                 description = "Initial password for the user. WARNING: defaults to the username — change this before deploying to a real system.";
+                example = "changeme";
                 type = lib.types.str;
               };
 
               mangowc = lib.mkOption {
                 default = null;
                 description = "Per-user MangoWC configuration (or null if unused).";
+                example = lib.literalExpression ''
+                  {
+                    wallpaper = /home/alice/wallpaper.png;
+                    settings = { border_width = 2; };
+                  }
+                '';
                 type = lib.types.nullOr (
                   lib.types.submodule {
                     options = {
                       clobber_home_directory = lib.mkOption {
                         default = true;
                         description = "Whether hjem is allowed to clobber the existing home directory.";
+                        example = false;
                         type = lib.types.bool;
                       };
 
                       default_keybinds.enable = lib.mkOption {
                         default = true;
                         description = "Apply the Eiros default MangoWC keybinds. User keybinds with matching names override the defaults.";
+                        example = false;
                         type = lib.types.bool;
                       };
 
                       wallpaper = lib.mkOption {
                         default = null;
                         description = "Absolute path to the wallpaper image. When set, runs `dms ipc call wallpaper set <path>` on login.";
+                        example = lib.literalExpression "/home/alice/wallpaper.png";
                         type = lib.types.nullOr lib.types.path;
                       };
 
                       keybinds = lib.mkOption {
                         default = { };
                         description = "Structured MangoWC keybind declarations. Keys matching a default keybind name override that default.";
+                        example = lib.literalExpression ''
+                          {
+                            open_browser = {
+                              modifier_keys = [ "SUPER" ];
+                              key_symbol = "b";
+                              mangowc_command = "spawn";
+                              command_arguments = "vivaldi";
+                            };
+                          }
+                        '';
                         type = lib.types.attrsOf keybind_submodule;
                       };
 
                       settings = lib.mkOption {
                         default = { };
                         description = "Raw MangoWC settings written as key=value pairs.";
+                        example = lib.literalExpression ''{ border_width = 2; gaps_in = 5; }'';
                         type = lib.types.attrsOf (
                           lib.types.oneOf [
                             lib.types.str

@@ -1,3 +1,4 @@
+# Configures Zsh as the default shell with Oh My Zsh, autosuggestions, syntax highlighting, and aliases.
 { config, lib, pkgs, ... }:
 let
   eiros_zsh = config.eiros.system.default_applications.zsh;
@@ -9,24 +10,28 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable zsh system-wide.";
+      example = false;
       type = lib.types.bool;
     };
 
     default_shell.enable = lib.mkOption {
       default = true;
       description = "Set zsh as the default shell for all users (users.defaultUserShell).";
+      example = false;
       type = lib.types.bool;
     };
 
     autosuggestions.enable = lib.mkOption {
       default = true;
       description = "Enable zsh-autosuggestions (suggests commands from history as you type).";
+      example = false;
       type = lib.types.bool;
     };
 
     syntax_highlighting.enable = lib.mkOption {
       default = true;
       description = "Enable zsh-syntax-highlighting (highlights commands as you type).";
+      example = false;
       type = lib.types.bool;
     };
 
@@ -34,18 +39,21 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable Oh My Zsh framework.";
+        example = false;
         type = lib.types.bool;
       };
 
       theme = lib.mkOption {
         default = "spaceship";
         description = "Oh My Zsh theme to use.";
+        example = "robbyrussell";
         type = lib.types.str;
       };
 
       custom_packages = lib.mkOption {
         default = [ pkgs.spaceship-prompt ];
         description = "Additional packages providing Oh My Zsh themes or plugins.";
+        example = lib.literalExpression "[ pkgs.spaceship-prompt ]";
         type = lib.types.listOf lib.types.package;
       };
 
@@ -60,6 +68,11 @@ in
           "sudo"
         ];
         description = "Oh My Zsh plugins to enable.";
+        example = [
+          "git"
+          "sudo"
+          "extract"
+        ];
         type = lib.types.listOf lib.types.str;
       };
     };
@@ -67,12 +80,17 @@ in
     hist_size = lib.mkOption {
       default = 50000;
       description = "Maximum number of history entries to keep.";
+      example = 100000;
       type = lib.types.int;
     };
 
     set_options = lib.mkOption {
       default = [ "HIST_IGNORE_DUPS" "HIST_IGNORE_SPACE" "SHARE_HISTORY" ];
       description = "Zsh options to enable (setopt).";
+      example = [
+        "HIST_IGNORE_DUPS"
+        "SHARE_HISTORY"
+      ];
       type = lib.types.listOf lib.types.str;
     };
   };

@@ -1,3 +1,4 @@
+# Configures fingerprint scanner authentication via fprintd and PAM integration.
 {
   config,
   lib,
@@ -11,6 +12,7 @@ in
     enable = lib.mkOption {
       default = false;
       description = "Enable fingerprint scanner support via fprintd.";
+      example = true;
       type = lib.types.bool;
     };
     pam_services = lib.mkOption {
@@ -24,6 +26,11 @@ in
         can authorize privilege escalation without a password. Remove "sudo"
         from this list if that is undesirable in your environment.
       '';
+      example = [
+        "login"
+        "sudo"
+        "polkit-1"
+      ];
       type = lib.types.listOf lib.types.str;
     };
   };

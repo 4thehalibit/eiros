@@ -1,3 +1,4 @@
+# Installs QEMU for running virtual machines directly without libvirt.
 {
   config,
   lib,
@@ -13,12 +14,14 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable QEMU virtual machines.";
+      example = false;
       type = lib.types.bool;
     };
 
     package = lib.mkOption {
       default = pkgs.qemu;
       description = "QEMU package to install.";
+      example = lib.literalExpression "pkgs.qemu_kvm";
       type = lib.types.package;
     };
   };

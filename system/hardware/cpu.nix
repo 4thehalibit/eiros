@@ -1,3 +1,4 @@
+# Configures CPU vendor detection, microcode updates, and IOMMU kernel parameters.
 { config, lib, ... }:
 let
   eiros_cpu = config.eiros.system.hardware.cpu;
@@ -9,18 +10,21 @@ in
     iommu.enable = lib.mkOption {
       default = false;
       description = "Enable IOMMU (intel_iommu=on or amd_iommu=on). Required for KVM DMA isolation and effective use of iommu=pt. Requires vendor to be set.";
+      example = true;
       type = lib.types.bool;
     };
 
     microcode.enable = lib.mkOption {
       default = true;
       description = "Enable CPU microcode updates.";
+      example = false;
       type = lib.types.bool;
     };
 
     vendor = lib.mkOption {
       default = null;
       description = "CPU vendor. If null, enable microcode updates for both AMD and Intel.";
+      example = "intel";
       type = lib.types.nullOr (
         lib.types.enum [
           "amd"

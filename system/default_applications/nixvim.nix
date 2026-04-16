@@ -1,3 +1,4 @@
+# Configures declarative Neovim via nixvim with LSP, treesitter, telescope, and completion.
 { config, lib, pkgs, ... }:
 let
   eiros_neovim = config.eiros.system.default_applications.neovim;
@@ -8,36 +9,42 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable nixvim for declarative Neovim configuration. Override repos configure plugins, LSP, and settings via programs.nixvim.*.";
+      example = false;
       type = lib.types.bool;
     };
 
     extra_plugins = lib.mkOption {
       default = [ ];
       description = "Additional Vim plugin packages not available in nixvim's structured plugin options (programs.nixvim.plugins.*). Maps to programs.nixvim.extraPlugins.";
+      example = lib.literalExpression "[ pkgs.vimPlugins.vim-surround ]";
       type = lib.types.listOf lib.types.package;
     };
 
     extra_config_lua = lib.mkOption {
       default = "";
       description = "Raw Lua appended to the main body of the generated init.lua. Maps to programs.nixvim.extraConfigLua.";
+      example = "vim.opt.wrap = true";
       type = lib.types.lines;
     };
 
     extra_config_lua_pre = lib.mkOption {
       default = "";
       description = "Raw Lua inserted before all nixvim-generated configuration. Maps to programs.nixvim.extraConfigLuaPre.";
+      example = "vim.g.mapleader = \" \"";
       type = lib.types.lines;
     };
 
     extra_config_lua_post = lib.mkOption {
       default = "";
       description = "Raw Lua inserted after all nixvim-generated configuration. Maps to programs.nixvim.extraConfigLuaPost.";
+      example = "require('custom').setup()";
       type = lib.types.lines;
     };
 
     use_global_packages = lib.mkOption {
       default = true;
       description = "Use the host system nixpkgs instead of evaluating a second nixpkgs instance. Maps to programs.nixvim.nixpkgs.useGlobalPackages.";
+      example = false;
       type = lib.types.bool;
     };
 
@@ -45,66 +52,80 @@ in
       number = lib.mkOption {
         default = true;
         description = "Show absolute line numbers.";
+        example = false;
         type = lib.types.bool;
       };
 
       relative_number = lib.mkOption {
         default = true;
         description = "Show relative line numbers.";
+        example = false;
         type = lib.types.bool;
       };
 
       clipboard = lib.mkOption {
         default = [ "unnamedplus" ];
         description = "Clipboard registers to use (maps to vim 'clipboard' option).";
+        example = [
+          "unnamed"
+          "unnamedplus"
+        ];
         type = lib.types.listOf lib.types.str;
       };
 
       undo_file = lib.mkOption {
         default = true;
         description = "Persist undo history across sessions.";
+        example = false;
         type = lib.types.bool;
       };
 
       auto_write_all = lib.mkOption {
         default = true;
         description = "Automatically write all buffers when leaving them.";
+        example = false;
         type = lib.types.bool;
       };
 
       tab_stop = lib.mkOption {
         default = 2;
         description = "Number of spaces a tab counts for.";
+        example = 4;
         type = lib.types.int;
       };
 
       shift_width = lib.mkOption {
         default = 2;
         description = "Number of spaces used for each indentation step.";
+        example = 4;
         type = lib.types.int;
       };
 
       expand_tab = lib.mkOption {
         default = true;
         description = "Insert spaces instead of tab characters.";
+        example = false;
         type = lib.types.bool;
       };
 
       split_right = lib.mkOption {
         default = true;
         description = "Open vertical splits to the right.";
+        example = false;
         type = lib.types.bool;
       };
 
       split_below = lib.mkOption {
         default = true;
         description = "Open horizontal splits below.";
+        example = false;
         type = lib.types.bool;
       };
 
       cursor_line = lib.mkOption {
         default = true;
         description = "Highlight the line containing the cursor.";
+        example = false;
         type = lib.types.bool;
       };
     };
@@ -113,54 +134,63 @@ in
       lualine.enable = lib.mkOption {
         default = true;
         description = "Enable lualine status bar.";
+        example = false;
         type = lib.types.bool;
       };
 
       bufferline.enable = lib.mkOption {
         default = true;
         description = "Enable bufferline tab bar.";
+        example = false;
         type = lib.types.bool;
       };
 
       which_key.enable = lib.mkOption {
         default = true;
         description = "Enable which-key keybind hints.";
+        example = false;
         type = lib.types.bool;
       };
 
       indent_blankline.enable = lib.mkOption {
         default = true;
         description = "Enable indent-blankline indentation guides.";
+        example = false;
         type = lib.types.bool;
       };
 
       telescope.enable = lib.mkOption {
         default = true;
         description = "Enable telescope fuzzy finder.";
+        example = false;
         type = lib.types.bool;
       };
 
       neo_tree.enable = lib.mkOption {
         default = true;
         description = "Enable neo-tree file explorer.";
+        example = false;
         type = lib.types.bool;
       };
 
       gitsigns.enable = lib.mkOption {
         default = true;
         description = "Enable gitsigns git decorations.";
+        example = false;
         type = lib.types.bool;
       };
 
       comment.enable = lib.mkOption {
         default = true;
         description = "Enable comment.nvim for easy commenting.";
+        example = false;
         type = lib.types.bool;
       };
 
       nvim_autopairs.enable = lib.mkOption {
         default = true;
         description = "Enable nvim-autopairs automatic bracket pairing.";
+        example = false;
         type = lib.types.bool;
       };
 
@@ -168,6 +198,7 @@ in
         enable = lib.mkOption {
           default = true;
           description = "Enable treesitter syntax highlighting and parsing.";
+          example = false;
           type = lib.types.bool;
         };
 
@@ -183,6 +214,7 @@ in
             markdown_inline
           ];
           description = "Treesitter grammar packages to install.";
+          example = lib.literalExpression "with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [ python rust ]";
           type = lib.types.listOf lib.types.package;
         };
       };
@@ -190,6 +222,7 @@ in
       lspconfig.enable = lib.mkOption {
         default = true;
         description = "Enable nvim-lspconfig LSP client.";
+        example = false;
         type = lib.types.bool;
       };
 
@@ -197,12 +230,14 @@ in
         enable = lib.mkOption {
           default = true;
           description = "Enable nvim-cmp completion engine.";
+          example = false;
           type = lib.types.bool;
         };
 
         auto_enable_sources = lib.mkOption {
           default = true;
           description = "Automatically enable completion sources.";
+          example = false;
           type = lib.types.bool;
         };
 
@@ -214,6 +249,7 @@ in
             { name = "path"; }
           ];
           description = "Completion sources for nvim-cmp.";
+          example = lib.literalExpression ''[ { name = "nvim_lsp"; } { name = "luasnip"; } ]'';
           type = lib.types.listOf (lib.types.attrsOf lib.types.str);
         };
       };
@@ -221,6 +257,7 @@ in
       luasnip.enable = lib.mkOption {
         default = true;
         description = "Enable LuaSnip snippet engine.";
+        example = false;
         type = lib.types.bool;
       };
     };
@@ -237,7 +274,6 @@ in
 
       nixpkgs.useGlobalPackages = eiros_nixvim.use_global_packages;
 
-      # --- Editor behavior ---
       opts = {
         number = eiros_nixvim.opts.number;
         relativenumber = eiros_nixvim.opts.relative_number;
@@ -252,7 +288,6 @@ in
         cursorline = eiros_nixvim.opts.cursor_line;
       };
 
-      # --- UI plugins ---
       plugins = {
         web-devicons.enable = true;
 
@@ -264,7 +299,6 @@ in
 
         indent-blankline.enable = eiros_nixvim.plugins.indent_blankline.enable;
 
-        # --- Navigation / editing ---
         telescope.enable = eiros_nixvim.plugins.telescope.enable;
 
         neo-tree.enable = eiros_nixvim.plugins.neo_tree.enable;
@@ -275,7 +309,6 @@ in
 
         nvim-autopairs.enable = eiros_nixvim.plugins.nvim_autopairs.enable;
 
-        # --- LSP / completion ---
         treesitter = {
           enable = eiros_nixvim.plugins.treesitter.enable;
           grammarPackages = eiros_nixvim.plugins.treesitter.grammar_packages;

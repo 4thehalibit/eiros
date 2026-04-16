@@ -1,3 +1,4 @@
+# Configures systemd-boot and EFI boot loader settings.
 { config, lib, ... }:
 let
   eiros_boot = config.eiros.system.boot;
@@ -8,18 +9,21 @@ in
       can_touch_efi_vars = lib.mkOption {
         default = true;
         description = "Allow the kernel to touch EFI variables.";
+        example = false;
         type = lib.types.bool;
       };
 
       enable = lib.mkOption {
         default = true;
         description = "Enable EFI boot support.";
+        example = false;
         type = lib.types.bool;
       };
 
       sys_mount_point = lib.mkOption {
         default = "/boot";
         description = "Mount point of the EFI system partition (e.g. \"/boot\" or \"/boot/efi\").";
+        example = "/boot/efi";
         type = lib.types.str;
       };
     };
@@ -28,12 +32,14 @@ in
       configuration_limit = lib.mkOption {
         default = 3;
         description = "Number of systemd-boot entries (generations) to keep on the ESP.";
+        example = 5;
         type = lib.types.int;
       };
 
       enable = lib.mkOption {
         default = true;
         description = "Enable systemd-boot.";
+        example = false;
         type = lib.types.bool;
       };
     };

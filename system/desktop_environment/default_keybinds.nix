@@ -1,3 +1,4 @@
+# Defines the default MangoWC keybind set: tag navigation, window management, media, and DMS actions.
 { config, lib, ... }:
 let
   helpers = import ../../resources/nix/mangowc_helpers.nix lib;
@@ -8,6 +9,7 @@ let
 
   tags = builtins.genList (i: i + 1) 9;
 
+  # Generate SUPER+1..9 binds to switch to tags 1–9.
   view_tag_binds = builtins.listToAttrs (map (tag: {
     name = "view_tag_${toString tag}";
     value = {
@@ -19,6 +21,7 @@ let
     };
   }) tags);
 
+  # Generate SUPER+SHIFT+1..9 binds to move the focused window to tags 1–9.
   move_to_tag_binds = builtins.listToAttrs (map (tag: {
     name = "move_to_tag_${toString tag}";
     value = {
@@ -30,6 +33,7 @@ let
     };
   }) tags);
 
+  # Generate focus, swap, and monitor-move binds for all four directions (h/j/k/l).
   directional_binds = builtins.listToAttrs (lib.concatLists (map (
     dir:
     let
@@ -78,12 +82,14 @@ in
       terminal = lib.mkOption {
         default = "ghostty";
         description = "Command used to launch the terminal emulator.";
+        example = "alacritty";
         type = lib.types.str;
       };
 
       file_browser = lib.mkOption {
         default = "ghostty -e yazi";
         description = "Command used to launch the file browser.";
+        example = "alacritty -e lf";
         type = lib.types.str;
       };
     };
@@ -91,6 +97,15 @@ in
     keybinds = lib.mkOption {
       default = { };
       description = "The resolved set of default MangoWC keybinds. Read this from users.nix to merge with per-user keybinds.";
+      example = lib.literalExpression ''
+        {
+          close_window = {
+            modifier_keys = [ "SUPER" ];
+            key_symbol = "q";
+            mangowc_command = "killclient";
+          };
+        }
+      '';
       type = lib.types.attrsOf keybind_submodule;
     };
   };

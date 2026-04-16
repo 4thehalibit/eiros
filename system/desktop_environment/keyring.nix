@@ -1,3 +1,4 @@
+# Configures GNOME Keyring, PAM integration, Seahorse GUI, and optional SSH agent.
 { config, lib, ... }:
 let
   eiros_keyring = config.eiros.system.desktop_environment.keyring;
@@ -16,6 +17,7 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable GNOME Keyring.";
+      example = false;
       type = lib.types.bool;
     };
 
@@ -24,18 +26,24 @@ in
         "login"
       ];
       description = "PAM services to enable GNOME Keyring integration for.";
+      example = [
+        "login"
+        "sddm"
+      ];
       type = lib.types.listOf lib.types.str;
     };
 
     seahorse.enable = lib.mkOption {
       default = true;
       description = "Enable Seahorse (GNOME Keyring GUI).";
+      example = false;
       type = lib.types.bool;
     };
 
     ssh_agent.enable = lib.mkOption {
       default = false;
       description = "Enable the OpenSSH agent (programs.ssh.startAgent).";
+      example = true;
       type = lib.types.bool;
     };
   };

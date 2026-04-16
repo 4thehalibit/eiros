@@ -1,3 +1,4 @@
+# Enables Flatpak support with optional KDE Discover integration and Flathub remote registration.
 {
   config,
   lib,
@@ -21,18 +22,21 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable Flatpak support.";
+      example = false;
       type = lib.types.bool;
     };
 
     discover = lib.mkOption {
       default = true;
       description = "Install KDE Discover for managing Flatpak applications.";
+      example = false;
       type = lib.types.bool;
     };
 
     flathub_url = lib.mkOption {
       default = "https://flathub.org/repo/flathub.flatpakrepo";
       description = "URL of the Flathub repository file to register as a Flatpak remote.";
+      example = "https://flathub.org/repo/flathub.flatpakrepo";
       type = lib.types.str;
     };
   };
@@ -43,12 +47,11 @@ in
 
     services.flatpak.enable = true;
 
-    # Discover support
     services.packagekit.enable = eiros_flatpak.discover;
 
     environment.systemPackages = lib.optionals (eiros_flatpak.discover && discoverPkg != null) [ discoverPkg ];
 
-    # Flathub remote (exact method from NixOS documentation)
+    # Register Flathub as a system-wide Flatpak remote on first boot.
     systemd.services.flatpak-repo = {
       wantedBy = [ "multi-user.target" ];
 

@@ -1,3 +1,4 @@
+# Applies kernel boot parameters and sysctl settings for CPU, VM, and I/O performance tuning.
 { config, lib, ... }:
 let
   eiros_tuning = config.eiros.system.boot.kernel.tuning;
@@ -7,6 +8,7 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable kernel parameter and sysctl performance tuning.";
+      example = false;
       type = lib.types.bool;
     };
 
@@ -18,6 +20,10 @@ in
         "threadirqs"
       ];
       description = "Kernel parameters for performance tuning.";
+      example = [
+        "quiet"
+        "mitigations=off"
+      ];
       type = lib.types.listOf lib.types.str;
     };
 
@@ -25,6 +31,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable sysctl VM and scheduler tuning.";
+        example = false;
         type = lib.types.bool;
       };
 
@@ -40,6 +47,7 @@ in
           "kernel.nmi_watchdog" = 0;
         };
         description = "Sysctl settings for VM and scheduler tuning.";
+        example = lib.literalExpression ''{ "vm.swappiness" = 10; "vm.vfs_cache_pressure" = 100; }'';
         type = lib.types.attrsOf lib.types.anything;
       };
     };

@@ -1,3 +1,4 @@
+# Controls whether unfree nixpkgs packages are allowed, with optional per-package predicates.
 { config, lib, ... }:
 let
   eiros_nix = config.eiros.system.nix;
@@ -7,6 +8,7 @@ in
     allow_unfree_software.enable = lib.mkOption {
       default = true;
       description = "Allow unfree software in Eiros.";
+      example = false;
       type = lib.types.bool;
     };
 
@@ -18,6 +20,10 @@ in
         matching. If empty, all unfree packages are allowed when
         allow_unfree_software.enable is true.
       '';
+      example = [
+        "nvidia"
+        "vivaldi"
+      ];
       type = lib.types.listOf lib.types.str;
     };
   };

@@ -1,3 +1,4 @@
+# Serializes structured MangoWC keybind declarations into key=value config file lines.
 lib:
 let
   to_string_list =
@@ -55,6 +56,7 @@ in
         command_arguments = lib.mkOption {
           default = null;
           description = "Optional command arguments.";
+          example = "vivaldi";
           type = lib.types.nullOr lib.types.str;
         };
 
@@ -67,17 +69,20 @@ in
 
         key_symbol = lib.mkOption {
           description = "Key symbol such as \"Return\", \"Q\", or \"space\".";
+          example = "Return";
           type = lib.types.str;
         };
 
         mangowc_command = lib.mkOption {
           description = "MangoWC command (e.g., \"spawn\", \"killclient\", \"quit\").";
+          example = "spawn";
           type = lib.types.str;
         };
 
         modifier_keys = lib.mkOption {
           default = [ ];
           description = "Modifier keys joined using '+', e.g., [\"SUPER\" \"SHIFT\"].";
+          example = [ "SUPER" "SHIFT" ];
           type = lib.types.listOf lib.types.str;
         };
       };

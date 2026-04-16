@@ -1,3 +1,4 @@
+# Master toggle for all virtualization modules; disabling this suppresses all sub-modules.
 { config, lib, ... }:
 let
   eiros_virtualization = config.eiros.system.virtualization;
@@ -7,6 +8,7 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable virtualization support.";
+      example = false;
       type = lib.types.bool;
     };
   };

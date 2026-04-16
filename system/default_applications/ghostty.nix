@@ -1,3 +1,4 @@
+# Installs the Ghostty terminal emulator.
 {
   config,
   lib,
@@ -12,12 +13,14 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable Ghostty terminal";
+      example = false;
       type = lib.types.bool;
     };
 
     package = lib.mkOption {
       default = pkgs.ghostty;
       description = "Ghostty package to install.";
+      example = lib.literalExpression "pkgs.ghostty";
       type = lib.types.package;
     };
   };

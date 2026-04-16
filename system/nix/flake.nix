@@ -1,3 +1,4 @@
+# Enables the Nix flakes and nix-command experimental features.
 { config, lib, ... }:
 let
   eiros_nix = config.eiros.system.nix;
@@ -7,6 +8,7 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable flakes in Eiros.";
+      example = false;
       type = lib.types.bool;
     };
   };

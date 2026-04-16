@@ -1,3 +1,4 @@
+# Configures the GnuPG agent with pinentry flavor and optional SSH key support.
 { config, lib, pkgs, ... }:
 let
   eiros_gpg = config.eiros.system.security.gpg;
@@ -7,6 +8,7 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable the GnuPG agent for GPG key management, commit signing, and pass/age workflows.";
+      example = false;
       type = lib.types.bool;
     };
 
@@ -14,6 +16,7 @@ in
       enable = lib.mkOption {
         default = false;
         description = "Use gpg-agent as the SSH agent (replaces ssh-agent with GPG-backed SSH keys).";
+        example = true;
         type = lib.types.bool;
       };
     };
@@ -21,6 +24,7 @@ in
     pinentry_flavor = lib.mkOption {
       default = "gnome3";
       description = "Pinentry flavor for GPG passphrase prompts (gnome3, gtk2, curses, tty, qt).";
+      example = "curses";
       type = lib.types.enum [ "curses" "emacs" "gnome3" "gtk2" "qt" "rofi" "tty" ];
     };
   };

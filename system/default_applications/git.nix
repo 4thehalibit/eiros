@@ -1,3 +1,4 @@
+# Enables Git version control system.
 { config, lib, ... }:
 let
   eiros_git = config.eiros.system.default_applications.git;
@@ -7,6 +8,7 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable Git.";
+      example = false;
       type = lib.types.bool;
     };
   };

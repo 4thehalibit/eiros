@@ -1,3 +1,4 @@
+# Enables direnv and nix-direnv for automatic per-directory Nix shell activation.
 { config, lib, ... }:
 let
   eiros_direnv = config.eiros.system.nix.direnv;
@@ -7,12 +8,14 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable direnv for per-directory automatic environment activation.";
+      example = false;
       type = lib.types.bool;
     };
 
     nix_direnv.enable = lib.mkOption {
       default = true;
       description = "Enable nix-direnv integration. Caches nix develop shells so direnv reloads are fast and GC-safe.";
+      example = false;
       type = lib.types.bool;
     };
   };

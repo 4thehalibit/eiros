@@ -1,3 +1,4 @@
+# Enables the dconf settings daemon required by GTK apps and Seahorse.
 { config, lib, ... }:
 let
   eiros_dconf = config.eiros.system.desktop_environment.dconf;
@@ -6,6 +7,7 @@ in
   options.eiros.system.desktop_environment.dconf.enable = lib.mkOption {
     default = true;
     description = "Enable the dconf settings daemon. Required by GTK applications and Seahorse to persist settings.";
+    example = false;
     type = lib.types.bool;
   };
 

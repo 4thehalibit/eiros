@@ -1,3 +1,4 @@
+# Configures NetworkManager with optional iwd Wi-Fi backend.
 { config, lib, ... }:
 let
   eiros_networking = config.eiros.system.networking;
@@ -7,6 +8,7 @@ in
     iwd.enable = lib.mkOption {
       default = true;
       description = "Use iwd as the Wi-Fi backend (via NetworkManager).";
+      example = false;
       type = lib.types.bool;
     };
 
@@ -14,6 +16,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Use NetworkManager for network configuration.";
+        example = false;
         type = lib.types.bool;
       };
     };

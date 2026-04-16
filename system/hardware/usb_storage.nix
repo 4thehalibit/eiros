@@ -1,3 +1,4 @@
+# Enables udisks2 and udiskie for automatic USB storage device mounting.
 {
   config,
   lib,
@@ -12,6 +13,7 @@ in
     udiskie.enable = lib.mkOption {
       default = true;
       description = "Enable USB storage automount support (udisks2 + udiskie).";
+      example = false;
       type = lib.types.bool;
     };
   };

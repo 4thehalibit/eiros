@@ -1,3 +1,4 @@
+# Installs pactl and playerctl for volume and media playback control via keybinds.
 { config, lib, pkgs, ... }:
 let
   eiros_sound = config.eiros.system.sound;
@@ -8,6 +9,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Install pactl for PulseAudio/PipeWire volume control via keybinds.";
+        example = false;
         type = lib.types.bool;
       };
     };
@@ -15,6 +17,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Install playerctl for media playback control.";
+        example = false;
         type = lib.types.bool;
       };
     };

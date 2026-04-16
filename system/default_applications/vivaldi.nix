@@ -1,3 +1,4 @@
+# Configures Vivaldi browser with Wayland/Ozone flags and optional GPU sandbox override.
 {
   config,
   lib,
@@ -15,16 +16,11 @@ let
       "--enable-features=UseOzonePlatform,ExternalProtocolDialog"
       "--disable-features=IntentPicker,DelegatedCompositing,WaylandLinuxDrmSyncobj"
 
-      # Prevent GPU raster flickering/tearing on NVIDIA/Wayland
       "--disable-zero-copy"
       "--num-raster-threads=1"
 
-      # Use OpenGL ANGLE backend to reduce text flickering on NVIDIA/Wayland
       "--use-angle=opengl"
     ]
-    # Disables Chromium's GPU process sandbox. This is a security regression but
-    # may be required to work around rendering issues with certain NVIDIA driver
-    # and Vulkan combinations. Opt-in via gpu_sandbox.disable = true.
     ++ lib.optionals eiros_vivaldi.gpu_sandbox.disable [ "--disable-gpu-sandbox" ]
     ++ eiros_vivaldi.extra_flags;
 
@@ -43,6 +39,7 @@ in
       disable = lib.mkOption {
         default = false;
         description = "Disable Chromium's GPU process sandbox (--disable-gpu-sandbox). This is a security regression — only enable if needed to work around NVIDIA/Vulkan rendering issues.";
+        example = true;
         type = lib.types.bool;
       };
     };
@@ -50,24 +47,28 @@ in
     extra_flags = lib.mkOption {
       default = [ ];
       description = "Additional command-line flags appended to the Vivaldi wrapper.";
+      example = [ "--force-dark-mode" ];
       type = lib.types.listOf lib.types.str;
     };
 
     desktop_file = lib.mkOption {
       default = "vivaldi.desktop";
       description = "Desktop file used for default browser associations.";
+      example = "vivaldi-stable.desktop";
       type = lib.types.str;
     };
 
     enable = lib.mkOption {
       default = true;
       description = "Enable Vivaldi as the default browser.";
+      example = false;
       type = lib.types.bool;
     };
 
     package = lib.mkOption {
       default = vivaldi-wayland;
       description = "Vivaldi package to install (Wayland/Ozone wrapped).";
+      example = lib.literalExpression "pkgs.vivaldi";
       type = lib.types.package;
     };
   };

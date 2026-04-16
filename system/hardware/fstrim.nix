@@ -1,3 +1,4 @@
+# Configures periodic fstrim to maintain SSD and NVMe performance and longevity.
 { config, lib, ... }:
 let
   eiros_fstrim = config.eiros.system.hardware.fstrim;
@@ -7,12 +8,14 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable periodic fstrim to maintain SSD/NVMe performance and longevity.";
+      example = false;
       type = lib.types.bool;
     };
 
     interval = lib.mkOption {
       default = "weekly";
       description = "systemd OnCalendar schedule for fstrim.";
+      example = "monthly";
       type = lib.types.str;
     };
   };

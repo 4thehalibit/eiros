@@ -1,3 +1,4 @@
+# Configures NVIDIA/Mesa GPU drivers, 32-bit support, and PRIME hybrid graphics.
 {
   config,
   lib,
@@ -19,6 +20,7 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable Eiros hardware graphics.";
+      example = false;
       type = lib.types.bool;
     };
 
@@ -26,6 +28,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable 32-bit graphics libraries (for 32-bit applications).";
+        example = false;
         type = lib.types.bool;
       };
     };
@@ -34,6 +37,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable NVIDIA GPU support.";
+        example = false;
         type = lib.types.bool;
       };
 
@@ -41,6 +45,7 @@ in
         enable = lib.mkOption {
           default = true;
           description = "Enable NVIDIA Container Toolkit (for GPU support in containers).";
+          example = false;
           type = lib.types.bool;
         };
       };
@@ -48,6 +53,7 @@ in
       open.enable = lib.mkOption {
         default = true;
         description = "Enable the NVIDIA open kernel module (hardware.nvidia.open).";
+        example = false;
         type = lib.types.bool;
       };
 
@@ -55,6 +61,7 @@ in
         enable = lib.mkOption {
           default = true;
           description = "Install the nvidia-settings GUI tool.";
+          example = false;
           type = lib.types.bool;
         };
       };
@@ -63,30 +70,35 @@ in
         enable = lib.mkOption {
           default = false;
           description = "Enable NVIDIA PRIME (hybrid graphics) configuration.";
+          example = true;
           type = lib.types.bool;
         };
 
         intel_bus_id = lib.mkOption {
           default = null;
           description = "Intel iGPU PCI Bus ID (e.g. \"PCI:0:2:0\"). Required when PRIME is enabled.";
+          example = "PCI:0:2:0";
           type = lib.types.nullOr lib.types.str;
         };
 
         nvidia_bus_id = lib.mkOption {
           default = null;
           description = "NVIDIA dGPU PCI Bus ID (e.g. \"PCI:1:0:0\"). Required when PRIME is enabled.";
+          example = "PCI:1:0:0";
           type = lib.types.nullOr lib.types.str;
         };
 
         offload.enable = lib.mkOption {
           default = true;
           description = "Enable PRIME render offload (recommended default for laptops).";
+          example = false;
           type = lib.types.bool;
         };
 
         sync.enable = lib.mkOption {
           default = false;
           description = "Enable PRIME sync (use instead of offload).";
+          example = true;
           type = lib.types.bool;
         };
       };
@@ -95,6 +107,7 @@ in
         wlr_no_hardware_cursors.enable = lib.mkOption {
           default = true;
           description = "Set WLR_NO_HARDWARE_CURSORS=1 (wlroots cursor workaround).";
+          example = false;
           type = lib.types.bool;
         };
       };
@@ -133,10 +146,8 @@ in
 
     environment = {
       variables = lib.mkIf nvidia_enabled (
-        # In PRIME offload mode the compositor runs on the iGPU (Mesa).
-        # Setting GBM_BACKEND/GLX vendor globally would force all apps through
-        # the NVIDIA stack even when rendered on the iGPU — only set these when
-        # the NVIDIA GPU is the sole display driver (no PRIME or sync mode).
+        # GBM_BACKEND and __GLX_VENDOR_LIBRARY_NAME must not be set globally in PRIME
+        # offload mode; they would force all rendering through NVIDIA even for iGPU clients.
         (lib.optionalAttrs (!prime_offload_enabled) {
           GBM_BACKEND = "nvidia-drm";
           __GLX_VENDOR_LIBRARY_NAME = "nvidia";

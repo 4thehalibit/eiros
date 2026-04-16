@@ -1,3 +1,4 @@
+# Installs brightnessctl for keyboard-driven screen brightness control.
 { config, lib, pkgs, ... }:
 let
   eiros_display = config.eiros.system.hardware.display;
@@ -8,6 +9,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Install brightnessctl for screen brightness control via keybinds.";
+        example = false;
         type = lib.types.bool;
       };
     };

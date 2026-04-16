@@ -1,3 +1,4 @@
+# Configures automatic Nix GC, store optimisation, disk pressure limits, and generation pruning.
 { config, lib, pkgs, ... }:
 let
   eiros_gc = config.eiros.system.nix.garbage_collection;
@@ -7,18 +8,21 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable sane Nix garbage collection defaults.";
+      example = false;
       type = lib.types.bool;
     };
 
     dates = lib.mkOption {
       default = "daily";
       description = "systemd OnCalendar schedule for nix-gc.";
+      example = "weekly";
       type = lib.types.str;
     };
 
     delete_older_than = lib.mkOption {
       default = "14d";
       description = "Delete generations older than this (nix-collect-garbage --delete-older-than).";
+      example = "30d";
       type = lib.types.str;
     };
 
@@ -26,12 +30,14 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable scheduled Nix store optimisation (dedup/hard-link). Runs out-of-band rather than inline during builds.";
+        example = false;
         type = lib.types.bool;
       };
 
       dates = lib.mkOption {
         default = [ "03:45" ];
         description = "systemd OnCalendar schedule for nix store optimisation.";
+        example = [ "04:00" ];
         type = lib.types.listOf lib.types.str;
       };
     };
@@ -39,6 +45,7 @@ in
     keep_generations = lib.mkOption {
       default = 3;
       description = "Keep only this many recent system generations. Runs alongside GC to prevent the boot partition from filling up.";
+      example = 5;
       type = lib.types.int;
     };
 
@@ -46,12 +53,14 @@ in
       min_free = lib.mkOption {
         default = 5 * 1024 * 1024 * 1024;
         description = "Trigger GC when free space drops below this many bytes.";
+        example = lib.literalExpression "2 * 1024 * 1024 * 1024";
         type = lib.types.int;
       };
 
       max_free = lib.mkOption {
         default = 20 * 1024 * 1024 * 1024;
         description = "GC until free space reaches this many bytes.";
+        example = lib.literalExpression "10 * 1024 * 1024 * 1024";
         type = lib.types.int;
       };
     };
@@ -77,14 +86,13 @@ in
       };
 
       settings = {
-        # Disk pressure GC: Nix will try to GC when low on space.
         min-free = eiros_gc.disk_pressure.min_free;
         max-free = eiros_gc.disk_pressure.max_free;
       };
     };
 
-    # Prune system profile generations before GC so the collected store
-    # paths are actually freed, and so the ESP never exceeds keep_generations entries.
+    # Prune old system generations before GC so freed store paths can actually be
+    # deleted and the boot partition stays within keep_generations entries.
     systemd.services.nix-gc = {
       preStart = ''
         ${pkgs.nix}/bin/nix-env \

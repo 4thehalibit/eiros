@@ -1,3 +1,4 @@
+# Installs wl-clipboard (wl-copy/wl-paste) for Wayland clipboard access from the terminal.
 { config, lib, pkgs, ... }:
 let
   eiros_wl_clipboard = config.eiros.system.default_applications.wl_clipboard;
@@ -6,6 +7,7 @@ in
   options.eiros.system.default_applications.wl_clipboard.enable = lib.mkOption {
     default = true;
     description = "Install wl-clipboard (wl-copy/wl-paste) for Wayland clipboard integration.";
+    example = false;
     type = lib.types.bool;
   };
 

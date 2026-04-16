@@ -1,3 +1,4 @@
+# Configures Podman with optional Docker compatibility, DNS, and a compose provider.
 {
   config,
   lib,
@@ -16,6 +17,7 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable podman.";
+      example = false;
       type = lib.types.bool;
     };
 
@@ -23,6 +25,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Install a compose provider so `podman compose` / `podman-compose` works.";
+        example = false;
         type = lib.types.bool;
       };
 
@@ -34,6 +37,7 @@ in
           - "podman-compose": python-based tool (`podman-compose ...`)
           - "docker-compose": Docker Compose v2 binary (`podman compose ...` can use it as provider)
         '';
+        example = "docker-compose";
         type = lib.types.enum [
           "podman-compose"
           "docker-compose"
@@ -44,19 +48,20 @@ in
     docker_compat = lib.mkOption {
       default = true;
       description = "Enable Docker compatibility shim so Docker CLI commands work with Podman.";
+      example = false;
       type = lib.types.bool;
     };
 
     dns_enabled = lib.mkOption {
       default = true;
       description = "Enable DNS resolution for containers in the default Podman network.";
+      example = false;
       type = lib.types.bool;
     };
   };
 
   config = lib.mkIf eiros_virtualization.enable (
     lib.mkMerge [
-      # Podman baseline
       (lib.mkIf eiros_podman.enable {
         virtualisation = {
           containers = {
@@ -70,7 +75,6 @@ in
         };
       })
 
-      # Compose provider installation
       (lib.mkIf (eiros_podman.enable && eiros_podman.compose.enable) {
         environment.systemPackages = [ composePkg ];
       })

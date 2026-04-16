@@ -1,3 +1,4 @@
+# Configures virt-manager with libvirtd, virtiofsd shared folders, SPICE, and USB redirection.
 {
   config,
   lib,
@@ -18,30 +19,35 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Virtual machine manager GUI.";
+      example = false;
       type = lib.types.bool;
     };
 
     shared_folder_support.enable = lib.mkOption {
       default = true;
       description = "Enable shared folder support in virt-manager (virtiofsd).";
+      example = false;
       type = lib.types.bool;
     };
 
     spice_gtk.enable = lib.mkOption {
       default = true;
       description = "Install spice-gtk for SPICE client integration.";
+      example = false;
       type = lib.types.bool;
     };
 
     usbredir.enable = lib.mkOption {
       default = true;
       description = "Install usbredir for USB redirection support.";
+      example = false;
       type = lib.types.bool;
     };
 
     virt_viewer.enable = lib.mkOption {
       default = true;
       description = "Install virt-viewer for viewing virtual machine consoles.";
+      example = false;
       type = lib.types.bool;
     };
   };

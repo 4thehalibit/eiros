@@ -1,3 +1,4 @@
+# Sets the NixOS state version, which controls backwards-compatibility behavior.
 { config, lib, ... }:
 let
   eiros_nix = config.eiros.system.nix;
@@ -7,6 +8,7 @@ in
     state_version = lib.mkOption {
       default = "25.11";
       description = "Version of the NixOS state to use.";
+      example = "24.11";
       type = lib.types.str;
     };
   };

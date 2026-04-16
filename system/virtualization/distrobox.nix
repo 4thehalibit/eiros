@@ -1,3 +1,4 @@
+# Installs distrobox for running containerized Linux distributions on the host.
 {
   config,
   lib,
@@ -11,6 +12,7 @@ in
   options.eiros.system.virtualization.distrobox.enable = lib.mkOption {
     default = true;
     description = "Enable distrobox.";
+    example = false;
     type = lib.types.bool;
   };
   config = lib.mkIf (eiros_virtualization.enable && eiros_virtualization.distrobox.enable) {

@@ -1,3 +1,4 @@
+# Recursively collects all public .nix files under a given directory, skipping dot/underscore-prefixed entries.
 dir:
 let
   inherit (builtins)

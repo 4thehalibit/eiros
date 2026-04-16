@@ -1,3 +1,4 @@
+# Configures the Dank Material Shell desktop environment, greeter, plugins, and feature flags.
 {
   config,
   lib,
@@ -14,6 +15,7 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable the Eiros Dank Material Shell.";
+      example = false;
       type = lib.types.bool;
     };
 
@@ -21,18 +23,21 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable DankMaterialShell systemd startup.";
+        example = false;
         type = lib.types.bool;
       };
 
       restart_if_changed = lib.mkOption {
         default = true;
         description = "Auto-restart dms.service when dank-material-shell changes.";
+        example = false;
         type = lib.types.bool;
       };
 
       target = lib.mkOption {
         default = "graphical-session.target";
         description = "Systemd target to bind DankMaterialShell to.";
+        example = "default.target";
         type = lib.types.str;
       };
     };
@@ -40,6 +45,14 @@ in
     plugins = lib.mkOption {
       default = { };
       description = "DMS plugins to install and enable.";
+      example = lib.literalExpression ''
+        {
+          my-plugin = {
+            src = ./my-plugin;
+            settings = { theme = "dark"; };
+          };
+        }
+      '';
       type = lib.types.attrsOf (
         lib.types.submodule {
           options = {
@@ -47,15 +60,18 @@ in
               type = lib.types.bool;
               default = true;
               description = "Whether to enable this plugin.";
+              example = false;
             };
             src = lib.mkOption {
               type = lib.types.either lib.types.package lib.types.path;
               description = "Source of the plugin package or path.";
+              example = lib.literalExpression "./my-plugin";
             };
             settings = lib.mkOption {
               type = lib.types.attrsOf lib.types.anything;
               default = { };
               description = "Plugin settings as an attribute set.";
+              example = lib.literalExpression ''{ theme = "dark"; }'' ;
             };
           };
         }
@@ -66,6 +82,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable the Eiros Dank Material Shell Greeter.";
+        example = false;
         type = lib.types.bool;
       };
 
@@ -73,6 +90,7 @@ in
         name = lib.mkOption {
           default = "mango";
           description = "Compositor to run the greeter in.";
+          example = "sway";
           type = lib.types.enum [
             "niri"
             "hyprland"
@@ -89,18 +107,26 @@ in
         keyboard_layout = lib.mkOption {
           default = "us";
           description = "Keyboard layout for the greeter's MangoWC.";
+          example = "de";
           type = lib.types.str;
         };
 
         keyboard_variant = lib.mkOption {
           default = "";
           description = "Keyboard layout variant for the greeter's MangoWC.";
+          example = "nodeadkeys";
           type = lib.types.str;
         };
 
         settings = lib.mkOption {
           default = { };
-          description = "Raw MangoWC settings for the greeter, written as key=value pairs.";
+          description = "Raw MangoWC key=value settings for the greeter compositor config.";
+          example = lib.literalExpression ''
+            {
+              border_width = 2;
+              gaps_in = 5;
+            }
+          '';
           type = lib.types.attrsOf (
             lib.types.oneOf [
               lib.types.str
@@ -113,6 +139,15 @@ in
         keybinds = lib.mkOption {
           default = { };
           description = "Structured MangoWC keybind declarations for the greeter.";
+          example = lib.literalExpression ''
+            {
+              close_window = {
+                modifier_keys = [ "SUPER" ];
+                key_symbol = "q";
+                mangowc_command = "killclient";
+              };
+            }
+          '';
           type = lib.types.attrsOf keybind_submodule;
         };
       };
@@ -120,12 +155,14 @@ in
       config_files = lib.mkOption {
         default = [ ];
         description = "Config files to copy into the greeter data directory.";
+        example = lib.literalExpression "[ ./dms-config.json ]";
         type = lib.types.listOf lib.types.path;
       };
 
       config_home = lib.mkOption {
         default = null;
         description = "User home directory to copy DMS configurations for the greeter. If DMS config files are in non-standard locations, use config_files instead.";
+        example = "/home/alice";
         type = lib.types.nullOr lib.types.str;
       };
 
@@ -133,26 +170,24 @@ in
         enable = lib.mkOption {
           default = true;
           description = "Enable logging of greeter messages to a file";
+          example = false;
           type = lib.types.bool;
         };
 
         path = lib.mkOption {
           default = "/tmp/dms-greeter.log";
           description = "Path for the greeter log file.";
+          example = "/var/log/dms-greeter.log";
           type = lib.types.str;
         };
       };
     };
 
-    # ---- DMS package feature flags ----------------------------------------
-    # These toggles control optional capabilities bundled with dank-material-shell.
-    # They map directly to the DMS module's enableAudioWavelength / enableVPN /
-    # etc. options and are distinct from the submodule config above.
-
     audio_wavelength = {
       enable = lib.mkOption {
         default = false;
         description = "Enable the cava audio visualizer in DMS.";
+        example = true;
         type = lib.types.bool;
       };
     };
@@ -161,6 +196,7 @@ in
       enable = lib.mkOption {
         default = false;
         description = "Enable CalDAV calendar synchronization in DMS (requires khal/vdirsyncer setup).";
+        example = true;
         type = lib.types.bool;
       };
     };
@@ -169,6 +205,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable clipboard history paste in DMS. Requires wtype.";
+        example = false;
         type = lib.types.bool;
       };
     };
@@ -177,6 +214,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable wallpaper-based automatic theming via matugen (GTK, Qt, terminals, Firefox, VSCode).";
+        example = false;
         type = lib.types.bool;
       };
     };
@@ -185,6 +223,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable system monitoring widget in DMS (CPU, RAM, GPU, temps, processes).";
+        example = false;
         type = lib.types.bool;
       };
     };
@@ -193,6 +232,7 @@ in
       enable = lib.mkOption {
         default = false;
         description = "Enable VPN management widget in DMS.";
+        example = true;
         type = lib.types.bool;
       };
     };
@@ -201,6 +241,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable DankSearch.";
+        example = false;
         type = lib.types.bool;
       };
 
@@ -208,12 +249,14 @@ in
         enable = lib.mkOption {
           default = true;
           description = "Enable the dsearch systemd user service.";
+          example = false;
           type = lib.types.bool;
         };
 
         target = lib.mkOption {
           default = "default.target";
           description = "Systemd target for the dsearch service.";
+          example = "graphical-session.target";
           type = lib.types.str;
         };
       };

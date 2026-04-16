@@ -1,3 +1,4 @@
+# Configures Bluetooth hardware support and PipeWire audio role integration.
 { config, lib, ... }:
 let
   eiros_bluetooth = config.eiros.system.hardware.bluetooth;
@@ -7,6 +8,7 @@ in
     enable = lib.mkOption {
       default = true;
       description = "Enable Bluetooth support.";
+      example = false;
       type = lib.types.bool;
     };
 
@@ -14,6 +16,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable Bluetooth audio support optimized for PipeWire.";
+        example = false;
         type = lib.types.bool;
       };
 
@@ -24,6 +27,12 @@ in
           "Media"
         ];
         description = "Bluetooth audio roles to enable (PipeWire/BlueZ). Valid BlueZ General.Enable values: Controller, Bredr, Hs, Audio, Source, Sink, Health, Media.";
+        example = [
+          "Source"
+          "Sink"
+          "Media"
+          "Health"
+        ];
         type = lib.types.listOf (lib.types.enum [
           "Controller"
           "Bredr"

@@ -1,3 +1,4 @@
+# Configures system firmware installation and the fwupd firmware update daemon.
 {
   config,
   lib,
@@ -13,6 +14,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable all supported firmware.";
+        example = false;
         type = lib.types.bool;
       };
     };
@@ -20,6 +22,7 @@ in
     extra_packages = lib.mkOption {
       default = [ ];
       description = "Additional firmware packages to install (added to hardware.firmware).";
+      example = lib.literalExpression "[ pkgs.rtl8761b-firmware ]";
       type = lib.types.listOf lib.types.package;
     };
 
@@ -27,6 +30,7 @@ in
       enable = lib.mkOption {
         default = true;
         description = "Enable fwupd (firmware update daemon, used by KDE Discover).";
+        example = false;
         type = lib.types.bool;
       };
     };
