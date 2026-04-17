@@ -1,16 +1,16 @@
 # Configures the system locale and sets all LC_ categories to a consistent value.
 { config, lib, ... }:
 let
-  eiros_language = config.eiros.system.language;
+  eiros_language = config.eiros.system.locale.language;
 in
 {
-  options.eiros.system.language = {
+  options.eiros.system.locale.language = {
     enable = lib.mkOption {
       default = true;
       description = "Configure system locale and i18n settings.";
       example = lib.literalExpression ''
         {
-          eiros.system.language.enable = false;
+          eiros.system.locale.language.enable = false;
         }
       '';
       type = lib.types.bool;
@@ -21,7 +21,7 @@ in
       description = "Language locale for the system (e.g. en_US.UTF-8).";
       example = lib.literalExpression ''
         {
-          eiros.system.language.locale = "en_GB.UTF-8";
+          eiros.system.locale.language.locale = "en_GB.UTF-8";
         }
       '';
       type = lib.types.str;

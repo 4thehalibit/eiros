@@ -1,17 +1,17 @@
 # Configures PipeWire audio stack and installs sound-related tools and applications.
 { config, lib, pkgs, ... }:
 let
-  eiros_sound = config.eiros.system.sound;
+  eiros_sound = config.eiros.system.audio.sound;
 in
 {
-  options.eiros.system.sound = {
+  options.eiros.system.audio.sound = {
     pactl = {
       enable = lib.mkOption {
         default = true;
         description = "Install pactl for PulseAudio/PipeWire volume control via keybinds.";
         example = lib.literalExpression ''
           {
-            eiros.system.sound.pactl.enable = false;
+            eiros.system.audio.sound.pactl.enable = false;
           }
         '';
         type = lib.types.bool;
@@ -24,7 +24,7 @@ in
         description = "Install playerctl for media playback control.";
         example = lib.literalExpression ''
           {
-            eiros.system.sound.playerctl.enable = false;
+            eiros.system.audio.sound.playerctl.enable = false;
           }
         '';
         type = lib.types.bool;
@@ -38,7 +38,7 @@ in
           description = "Enable ALSA support for PipeWire.";
           example = lib.literalExpression ''
             {
-              eiros.system.sound.pipewire.alsa.enable = false;
+              eiros.system.audio.sound.pipewire.alsa.enable = false;
             }
           '';
           type = lib.types.bool;
@@ -49,7 +49,7 @@ in
           description = "Enable 32-bit ALSA support (useful for Steam/Wine).";
           example = lib.literalExpression ''
             {
-              eiros.system.sound.pipewire.alsa.support_32_bit = false;
+              eiros.system.audio.sound.pipewire.alsa.support_32_bit = false;
             }
           '';
           type = lib.types.bool;
@@ -61,7 +61,7 @@ in
         description = "Enable PipeWire.";
         example = lib.literalExpression ''
           {
-            eiros.system.sound.pipewire.enable = false;
+            eiros.system.audio.sound.pipewire.enable = false;
           }
         '';
         type = lib.types.bool;
@@ -72,7 +72,7 @@ in
         description = "Enable PipeWire JACK support.";
         example = lib.literalExpression ''
           {
-            eiros.system.sound.pipewire.jack.enable = true;
+            eiros.system.audio.sound.pipewire.jack.enable = true;
           }
         '';
         type = lib.types.bool;
@@ -83,7 +83,7 @@ in
         description = "Enable PipeWire PulseAudio compatibility layer.";
         example = lib.literalExpression ''
           {
-            eiros.system.sound.pipewire.pulse.enable = false;
+            eiros.system.audio.sound.pipewire.pulse.enable = false;
           }
         '';
         type = lib.types.bool;
@@ -94,7 +94,7 @@ in
         description = "Enable RTKit for real-time audio scheduling.";
         example = lib.literalExpression ''
           {
-            eiros.system.sound.pipewire.rtkit.enable = false;
+            eiros.system.audio.sound.pipewire.rtkit.enable = false;
           }
         '';
         type = lib.types.bool;
@@ -107,7 +107,7 @@ in
         description = "Install Helvum, a GTK patchbay GUI for managing PipeWire audio/video routing.";
         example = lib.literalExpression ''
           {
-            eiros.system.sound.helvum.enable = true;
+            eiros.system.audio.sound.helvum.enable = true;
           }
         '';
         type = lib.types.bool;
@@ -120,7 +120,7 @@ in
         description = "Install EasyEffects for PipeWire audio effects and equalisation.";
         example = lib.literalExpression ''
           {
-            eiros.system.sound.easyeffects.enable = true;
+            eiros.system.audio.sound.easyeffects.enable = true;
           }
         '';
         type = lib.types.bool;
@@ -131,7 +131,7 @@ in
         description = "Start EasyEffects automatically as a systemd user service on login.";
         example = lib.literalExpression ''
           {
-            eiros.system.sound.easyeffects.autostart.enable = false;
+            eiros.system.audio.sound.easyeffects.autostart.enable = false;
           }
         '';
         type = lib.types.bool;
@@ -152,7 +152,7 @@ in
       assertions = [
         {
           assertion = !config.services.pulseaudio.enable;
-          message = "eiros.system.sound.pipewire.enable requires services.pulseaudio.enable = false";
+          message = "eiros.system.audio.sound.pipewire.enable requires services.pulseaudio.enable = false";
         }
       ];
 

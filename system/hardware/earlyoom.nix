@@ -1,16 +1,16 @@
 # Enables earlyoom to kill memory-hungry processes before the kernel OOM freezes the system.
 { config, lib, ... }:
 let
-  eiros_earlyoom = config.eiros.system.earlyoom;
+  eiros_earlyoom = config.eiros.system.hardware.earlyoom;
 in
 {
-  options.eiros.system.earlyoom = {
+  options.eiros.system.hardware.earlyoom = {
     enable = lib.mkOption {
       default = true;
       description = "Enable earlyoom to prevent system freezes under memory pressure.";
       example = lib.literalExpression ''
         {
-          eiros.system.earlyoom.enable = false;
+          eiros.system.hardware.earlyoom.enable = false;
         }
       '';
       type = lib.types.bool;
@@ -21,7 +21,7 @@ in
       description = "Kill processes when free memory drops below this percentage.";
       example = lib.literalExpression ''
         {
-          eiros.system.earlyoom.free_mem_threshold = 5;
+          eiros.system.hardware.earlyoom.free_mem_threshold = 5;
         }
       '';
       type = lib.types.int;
@@ -32,7 +32,7 @@ in
       description = "Kill processes when free swap drops below this percentage.";
       example = lib.literalExpression ''
         {
-          eiros.system.earlyoom.free_swap_threshold = 5;
+          eiros.system.hardware.earlyoom.free_swap_threshold = 5;
         }
       '';
       type = lib.types.int;
@@ -43,7 +43,7 @@ in
       description = "Extra arguments passed to earlyoom (e.g. --prefer or --avoid patterns).";
       example = lib.literalExpression ''
         {
-          eiros.system.earlyoom.extra_args = [ "--avoid '(^|/)(init|systemd)$'" ];
+          eiros.system.hardware.earlyoom.extra_args = [ "--avoid '(^|/)(init|systemd)$'" ];
         }
       '';
       type = lib.types.listOf lib.types.str;

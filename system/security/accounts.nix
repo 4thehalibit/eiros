@@ -1,15 +1,15 @@
 # Controls whether the system allows mutable (imperative) user account management.
 { config, lib, ... }:
 let
-  eiros_accounts = config.eiros.system.accounts;
+  eiros_accounts = config.eiros.system.security.accounts;
 in
 {
-  options.eiros.system.accounts.mutable_users.enable = lib.mkOption {
+  options.eiros.system.security.accounts.mutable_users.enable = lib.mkOption {
     default = true;
     description = "Allow users to create new accounts.";
     example = lib.literalExpression ''
       {
-        eiros.system.accounts.mutable_users.enable = false;
+        eiros.system.security.accounts.mutable_users.enable = false;
       }
     '';
     type = lib.types.bool;

@@ -24,16 +24,18 @@ The core repo defines the module schemas and defaults. Personal hardware and use
 eiros/
 ├── flake.nix               # Flake definition and inputs
 ├── system/                 # System module schemas and defaults
-│   ├── boot/               # Bootloader, kernel, Plymouth
-│   ├── hardware/           # CPU, GPU, power, peripherals
-│   ├── desktop_environment/# MangoWC, DMS, XDG portals, Wayland
+│   ├── audio/              # PipeWire, pactl, playerctl, EasyEffects, Helvum
+│   ├── boot/               # Bootloader, kernel package, kernel params, Plymouth
 │   ├── default_applications/# Neovim, Git, Zsh, Ghostty, Vivaldi
-│   ├── networking/         # NetworkManager, hostname, DNS
-│   ├── security/           # Firewall, SSH, GPG, PAM
-│   ├── nix/                # Flakes, GC, direnv, nix-ld, nix-alien
-│   ├── virtualization/     # KVM, Podman, Distrobox
+│   ├── desktop_environment/# MangoWC, DMS, XDG portals, Wayland
 │   ├── fonts/              # Font packages and fontconfig
-│   └── ...                 # Audio, locale, time, logging, accounts
+│   ├── hardware/           # CPU, GPU, power, peripherals, earlyoom
+│   ├── locale/             # Timezone, timesync, i18n locale
+│   ├── logging/            # journald retention and rate limiting
+│   ├── networking/         # NetworkManager, hostname, DNS
+│   ├── nix/                # Flakes, GC, cache, direnv, nix-ld, nix-alien, man pages
+│   ├── security/           # Firewall, SSH, GPG, polkit, sops, mutable accounts
+│   └── virtualization/     # KVM, Podman, Distrobox
 ├── users/
 │   └── users.nix           # User module schema
 └── resources/
@@ -126,22 +128,18 @@ All options are under the `eiros.*` namespace:
 
 | Namespace | Description |
 |---|---|
-| `eiros.system.hardware.*` | CPU vendor, GPU, power, peripherals, printing, Bluetooth |
-| `eiros.system.boot.*` | Bootloader, kernel params, sysctl tuning, Plymouth theme |
+| `eiros.system.hardware.*` | CPU vendor, GPU, power, peripherals, printing, Bluetooth, earlyoom OOM killer |
+| `eiros.system.boot.*` | Bootloader, kernel package, kernel params, sysctl tuning, Plymouth theme |
+| `eiros.system.audio.*` | pactl/playerctl keybind tools, PipeWire (ALSA, JACK, PulseAudio compat, RTKit), EasyEffects audio EQ (off by default), Helvum patchbay GUI (off by default) |
+| `eiros.system.locale.*` | Timezone, timesync, i18n locale and LC_ categories |
 | `eiros.system.networking.*` | Hostname, DNS, NetworkManager, IWD, Avahi mDNS |
-| `eiros.system.security.*` | Firewall, SSH, GPG, polkit, polkit authentication agent, PAM, sops-nix secrets |
+| `eiros.system.security.*` | Firewall, SSH, GPG, polkit, polkit authentication agent, sops-nix secrets, mutable user accounts |
 | `eiros.system.desktop_environment.*` | MangoWC, DMS, XDG portals, keyring, keybind commands, Stylix system-wide theming (off by default — requires a wallpaper path) |
-| `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld, nix-alien FHS wrapper, nh helper |
+| `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld, nix-alien FHS wrapper, nh helper, man pages and NixOS documentation |
 | `eiros.system.default_applications.*` | Neovim/nixvim opts and plugins, Zsh history and options, Vivaldi flags, fzf defaults, zoxide smart cd, atuin history, delta git diffs, lazygit TUI, pay-respects command corrector, Zellij multiplexer, Flatpak, mpv, imv, zathura, btop, ncdu, archive tools (zip/p7zip), MangoHUD performance overlay, GStreamer multimedia codecs, Nix LSP and formatter |
 | `eiros.system.virtualization.*` | KVM, Podman (DNS, Docker compat), Distrobox |
 | `eiros.system.fonts.*` | Font packages and fontconfig defaults |
 | `eiros.system.logging.*` | journald retention, rate limiting, vacuum |
-| `eiros.system.time.*` | Timezone, timesync |
-| `eiros.system.language.*` | Locale |
-| `eiros.system.sound.*` | pactl/playerctl keybind tools, PipeWire (ALSA, JACK, PulseAudio compat, RTKit), EasyEffects audio EQ (off by default), Helvum patchbay GUI (off by default) |
-| `eiros.system.earlyoom.*` | Early OOM killer thresholds and process preferences |
-| `eiros.system.accounts.*` | Mutable user account management |
-| `eiros.system.documentation.*` | man pages and NixOS documentation |
 | `eiros.users.*` | User accounts, MangoWC keybinds, wallpaper |
 
 ## Default MangoWC Keybinds
