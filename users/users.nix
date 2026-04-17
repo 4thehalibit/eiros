@@ -223,18 +223,27 @@ in
       let
         mangowc_cfg = user_config.mangowc;
         mangowc_enabled = config.eiros.system.desktop_environment.mangowc.enable && mangowc_cfg != null;
+        wpe_enabled = config.eiros.system.desktop_environment.wallpaper_engine.enable;
       in
       {
         directory = lib.mkDefault "/home/${username}";
         user = username;
 
-        files = lib.optionalAttrs mangowc_enabled {
-          ".config/mango/config.conf" = {
-            clobber = lib.mkDefault mangowc_cfg.clobber_home_directory;
-            generator = mangowc_generator;
-            value = make_user_mangowc_config mangowc_cfg;
-          };
-        };
+        files =
+          (lib.optionalAttrs mangowc_enabled {
+            ".config/mango/config.conf" = {
+              clobber = lib.mkDefault mangowc_cfg.clobber_home_directory;
+              generator = mangowc_generator;
+              value = make_user_mangowc_config mangowc_cfg;
+            };
+          })
+          // (lib.optionalAttrs wpe_enabled {
+            ".config/DankMaterialShell/plugin_settings.json" = {
+              type = "copy";
+              clobber = false;
+              text = builtins.toJSON { linuxWallpaperEngine.enabled = true; };
+            };
+          });
       }
     ) config.eiros.users;
   };
