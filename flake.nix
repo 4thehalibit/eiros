@@ -8,6 +8,7 @@
       eiros_users,
       hjem,
       mango,
+      nix-alien,
       nix-index-database,
       nixpkgs,
       nixvim,
@@ -24,6 +25,7 @@
           eiros_users
           hjem
           mango
+          nix-alien
           nix-index-database
           nixpkgs
           nixvim
@@ -47,6 +49,7 @@
           nixvim.nixosModules.nixvim
           sops-nix.nixosModules.sops
           stylix.nixosModules.stylix
+          { nixpkgs.overlays = [ nix-alien.overlays.default ]; }
         ]
         ++ (import_modules ./system)
         ++ (import_modules ./users);
@@ -78,6 +81,11 @@
 
     mango = {
       url = "github:DreamMaoMao/mango";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-alien = {
+      url = "github:thiagokokada/nix-alien";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
