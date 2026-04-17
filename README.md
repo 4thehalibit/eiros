@@ -12,7 +12,7 @@ The core repo defines the module schemas and defaults. Personal hardware and use
 - **Home directory management** via [hjem](https://github.com/feel-co/hjem)
 - **Hardware support** — NVIDIA PRIME (offload/sync), Intel/AMD CPU microcode, Bluetooth, printing, fingerprint
 - **Security-first defaults** — UFW firewall enabled, SSH disabled, no password auth over SSH, optional sops-nix secret management
-- **Virtualization** — KVM/QEMU, Libvirt, Podman, Distrobox, Virt Manager
+- **Virtualization** — KVM/QEMU, Libvirt, Distrobox (Docker backend), Virt Manager
 - **Shell toolchain** — zoxide, atuin, delta, lazygit, pay-respects, and optional Zellij multiplexer alongside the existing fzf/yazi/eza/bat/ripgrep stack
 - **Declarative Neovim** — fully configured via nixvim with LSP, treesitter, completion, telescope, and plugin ecosystem
 - **Binary compatibility** — nix-ld provides a dynamic linker stub for unpatched executables; nix-alien wraps them in an auto-detected FHS environment when the stub isn't enough
@@ -36,7 +36,7 @@ eiros/
 │   ├── networking/         # NetworkManager, hostname, DNS
 │   ├── nix/                # Flakes, GC, cache, direnv, nix-ld, nix-alien, man pages
 │   ├── security/           # Firewall, SSH, GPG, polkit, sops, mutable accounts
-│   └── virtualization/     # KVM, Podman, Distrobox
+│   └── virtualization/     # KVM, Distrobox (Docker backend)
 ├── users/
 │   └── users.nix           # User module schema
 └── resources/
@@ -138,7 +138,7 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.desktop_environment.*` | MangoWC, DMS, XDG portals, keyring, keybind commands, Stylix system-wide theming (off by default — requires a wallpaper path), DMS linux-wallpaperengine plugin for animated Steam Workshop wallpapers |
 | `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld, nix-alien FHS wrapper, nh helper, man pages and NixOS documentation |
 | `eiros.system.default_applications.*` | Neovim/nixvim opts and plugins, Zsh history and options, Vivaldi flags, fzf defaults, zoxide smart cd, atuin history, delta git diffs, lazygit TUI, pay-respects command corrector, Zellij multiplexer, Flatpak, mpv, imv, zathura, btop, ncdu, archive tools (zip/p7zip), MangoHUD performance overlay, GStreamer multimedia codecs, Nix LSP and formatter, jq, linux-wallpaperengine |
-| `eiros.system.virtualization.*` | KVM, Podman (DNS, Docker compat), Distrobox |
+| `eiros.system.virtualization.*` | KVM, Distrobox (Docker backend, NVIDIA CDI), Virt Manager |
 | `eiros.system.fonts.*` | Font packages and fontconfig defaults |
 | `eiros.system.logging.*` | journald retention, rate limiting, vacuum |
 | `eiros.users.*` | User accounts, MangoWC keybinds, wallpaper |
