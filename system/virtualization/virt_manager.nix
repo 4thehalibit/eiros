@@ -72,7 +72,7 @@ in
     };
 
     windows_11.enable = lib.mkOption {
-      default = false;
+      default = true;
       description = "Enable Windows 11 guest VM support (swtpm TPM 2.0 emulator and OVMFFull UEFI firmware with Secure Boot).";
       example = lib.literalExpression ''
         {

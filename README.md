@@ -138,7 +138,7 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.desktop_environment.*` | MangoWC, DMS, XDG portals, keyring, keybind commands, Stylix system-wide theming (off by default — requires a wallpaper path), DMS linux-wallpaperengine plugin for animated Steam Workshop wallpapers |
 | `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld, nix-alien FHS wrapper, nh helper, man pages and NixOS documentation |
 | `eiros.system.default_applications.*` | Neovim/nixvim opts and plugins, Zsh history and options, Vivaldi flags, fzf defaults, zoxide smart cd, atuin history, delta git diffs, lazygit TUI, pay-respects command corrector, Zellij multiplexer, Flatpak, mpv, imv, zathura, btop, ncdu, archive tools (zip/p7zip), MangoHUD performance overlay, GStreamer multimedia codecs, Nix LSP and formatter, jq, linux-wallpaperengine |
-| `eiros.system.virtualization.*` | KVM, Distrobox (Docker backend, NVIDIA CDI), Virt Manager, Windows 11 guest support (swtpm TPM 2.0, OVMFFull Secure Boot — off by default) |
+| `eiros.system.virtualization.*` | KVM, Distrobox (Docker backend, NVIDIA CDI), Virt Manager, Windows 11 guest support (swtpm TPM 2.0, OVMFFull Secure Boot) |
 | `eiros.system.fonts.*` | Font packages and fontconfig defaults |
 | `eiros.system.logging.*` | journald retention, rate limiting, vacuum |
 | `eiros.users.*` | User accounts, MangoWC keybinds, wallpaper |
