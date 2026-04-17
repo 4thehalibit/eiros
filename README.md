@@ -59,6 +59,13 @@ sudo nixos-rebuild boot --flake .#default \
   --override-input eiros_hardware github:yourname/eiros.hardware.yourmachine
 ```
 
+If you set `eiros.system.nix.nh.flake` to your config path in your hardware or users repo, you can use [nh](https://github.com/nix-community/nh) instead:
+
+```bash
+nh os boot
+nh os switch
+```
+
 ### Creating Your Own Config Repos
 
 **Hardware repo** (`eiros.hardware.*`)
@@ -122,7 +129,7 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.networking.*` | Hostname, DNS, NetworkManager, IWD, Avahi mDNS |
 | `eiros.system.security.*` | Firewall, SSH, GPG, polkit, polkit authentication agent, PAM, sops-nix secrets |
 | `eiros.system.desktop_environment.*` | MangoWC, DMS, XDG portals, keyring, keybind commands |
-| `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld |
+| `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld, nh helper |
 | `eiros.system.default_applications.*` | Neovim/nixvim opts and plugins, Zsh history and options, Vivaldi flags, fzf defaults, zoxide smart cd, atuin history, delta git diffs, lazygit TUI, pay-respects command corrector, Zellij multiplexer, Flatpak, mpv, imv, zathura, btop, ncdu, archive tools (zip/p7zip), MangoHUD performance overlay, GStreamer multimedia codecs, Nix LSP and formatter |
 | `eiros.system.virtualization.*` | KVM, Podman (DNS, Docker compat), Distrobox |
 | `eiros.system.fonts.*` | Font packages and fontconfig defaults |
