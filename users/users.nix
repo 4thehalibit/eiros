@@ -98,6 +98,52 @@ in
                 type = lib.types.str;
               };
 
+              dms = lib.mkOption {
+                default = null;
+                description = "Per-user DMS settings written to ~/.config/DankMaterialShell/settings.json (or null to skip). Defaults to the system-wide eiros.system.user_defaults.dms settings.";
+                example = lib.literalExpression ''
+                  {
+                    eiros.users.alice.dms = {
+                      settings = {
+                        currentThemeName = "blue";
+                        cornerRadius = 12;
+                        use24HourClock = false;
+                      };
+                    };
+                  }
+                '';
+                type = lib.types.nullOr (
+                  lib.types.submodule {
+                    options = {
+                      clobber = lib.mkOption {
+                        default = true;
+                        description = "Whether hjem is allowed to overwrite an existing settings.json.";
+                        example = lib.literalExpression ''
+                          {
+                            eiros.users.alice.dms.clobber = false;
+                          }
+                        '';
+                        type = lib.types.bool;
+                      };
+
+                      settings = lib.mkOption {
+                        default = config.eiros.system.user_defaults.dms._settings;
+                        description = "DMS settings attribute set serialised to JSON. Override individual keys to deviate from the system-wide defaults in eiros.system.user_defaults.dms.";
+                        example = lib.literalExpression ''
+                          {
+                            eiros.users.alice.dms.settings = {
+                              currentThemeName = "blue";
+                              cornerRadius = 8;
+                            };
+                          }
+                        '';
+                        type = lib.types.attrsOf lib.types.anything;
+                      };
+                    };
+                  }
+                );
+              };
+
               mangowc = lib.mkOption {
                 default = null;
                 description = "Per-user MangoWC configuration (or null if unused).";
@@ -202,12 +248,18 @@ in
     assertions = lib.flatten (
       lib.mapAttrsToList (
         username: user_config:
-        lib.optional
+        (lib.optional
           (user_config.mangowc != null && !config.eiros.system.desktop_environment.mangowc.enable)
           {
             assertion = false;
             message = "User '${username}' has mangowc config but eiros.system.desktop_environment.mangowc.enable is false.";
-          }
+          })
+        ++ (lib.optional
+          (user_config.dms != null && !config.eiros.system.desktop_environment.dank_material_shell.enable)
+          {
+            assertion = false;
+            message = "User '${username}' has dms config but eiros.system.desktop_environment.dank_material_shell.enable is false.";
+          })
       ) config.eiros.users
     );
 
@@ -223,6 +275,8 @@ in
       let
         mangowc_cfg = user_config.mangowc;
         mangowc_enabled = config.eiros.system.desktop_environment.mangowc.enable && mangowc_cfg != null;
+        dms_cfg = user_config.dms;
+        dms_enabled = config.eiros.system.desktop_environment.dank_material_shell.enable && dms_cfg != null;
       in
       {
         directory = lib.mkDefault "/home/${username}";
@@ -234,6 +288,12 @@ in
               clobber = lib.mkDefault mangowc_cfg.clobber_home_directory;
               generator = mangowc_generator;
               value = make_user_mangowc_config mangowc_cfg;
+            };
+          })
+          // (lib.optionalAttrs dms_enabled {
+            ".config/DankMaterialShell/settings.json" = {
+              clobber = lib.mkDefault dms_cfg.clobber;
+              text = builtins.toJSON dms_cfg.settings;
             };
           });
       }

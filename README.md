@@ -38,6 +38,8 @@ eiros/
 │   ├── security/           # Firewall, SSH, GPG, polkit, sops, mutable accounts
 │   └── virtualization/     # KVM, Distrobox (Docker backend)
 ├── users/
+│   ├── default_settings/
+│   │   └── dms.nix         # System-wide DMS user setting defaults
 │   └── users.nix           # User module schema
 └── resources/
     └── nix/
@@ -101,6 +103,13 @@ Create a flake that exports `nixosModules.default` and sets `eiros.users.*` opti
     nixosModules.default = { ... }: {
       eiros.users.yourusername = {
         initial_password = "change_me";
+        # DMS settings.json — omit to use system-wide defaults from
+        # eiros.system.user_defaults.dms.*; override by merging in JSON keys
+        dms.settings = config.eiros.system.user_defaults.dms._settings // {
+          currentThemeName = "blue";
+          cornerRadius = 12;
+          use24HourClock = false;
+        };
         mangowc = {
           settings = {
             # MangoWC key-value config
@@ -141,7 +150,8 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.virtualization.*` | KVM, Distrobox (Docker backend, NVIDIA CDI), Virt Manager, Windows 11 guest support (swtpm TPM 2.0, OVMFFull Secure Boot) |
 | `eiros.system.fonts.*` | Font packages and fontconfig defaults |
 | `eiros.system.logging.*` | journald retention, rate limiting, vacuum |
-| `eiros.users.*` | User accounts, MangoWC keybinds, wallpaper |
+| `eiros.system.user_defaults.dms.*` | System-wide defaults for all 200+ DMS user settings (theme, appearance, bar, dock, notifications, lock screen, power, etc.) written to `~/.config/DankMaterialShell/settings.json` |
+| `eiros.users.*` | User accounts, MangoWC keybinds, wallpaper, per-user DMS settings override |
 
 ## Default MangoWC Keybinds
 
