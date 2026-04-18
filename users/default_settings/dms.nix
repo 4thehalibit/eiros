@@ -519,14 +519,46 @@ in
 
     control_center_widgets = lib.mkOption {
       default = [
-        { id = "volumeSlider"; enabled = true; width = 50; }
-        { id = "brightnessSlider"; enabled = true; width = 50; }
-        { id = "wifi"; enabled = true; width = 50; }
-        { id = "bluetooth"; enabled = true; width = 50; }
-        { id = "audioOutput"; enabled = true; width = 50; }
-        { id = "audioInput"; enabled = true; width = 50; }
-        { id = "nightMode"; enabled = true; width = 50; }
-        { id = "darkMode"; enabled = true; width = 50; }
+        {
+          id = "volumeSlider";
+          enabled = true;
+          width = 50;
+        }
+        {
+          id = "brightnessSlider";
+          enabled = true;
+          width = 50;
+        }
+        {
+          id = "wifi";
+          enabled = true;
+          width = 50;
+        }
+        {
+          id = "bluetooth";
+          enabled = true;
+          width = 50;
+        }
+        {
+          id = "audioOutput";
+          enabled = true;
+          width = 50;
+        }
+        {
+          id = "audioInput";
+          enabled = true;
+          width = 50;
+        }
+        {
+          id = "nightMode";
+          enabled = true;
+          width = 50;
+        }
+        {
+          id = "darkMode";
+          enabled = true;
+          width = 50;
+        }
       ];
       type = lib.types.listOf lib.types.anything;
       description = "Ordered list of control center tile widgets with enabled/width configuration.";
@@ -801,11 +833,31 @@ in
     # ── App ID substitutions ───────────────────────────────────────────────
     app_id_substitutions = lib.mkOption {
       default = [
-        { pattern = "Spotify"; replacement = "spotify"; type = "exact"; }
-        { pattern = "beepertexts"; replacement = "beeper"; type = "exact"; }
-        { pattern = "home assistant desktop"; replacement = "homeassistant-desktop"; type = "exact"; }
-        { pattern = "com.transmissionbt.transmission"; replacement = "transmission-gtk"; type = "contains"; }
-        { pattern = "^steam_app_(\\d+)$"; replacement = "steam_icon_$1"; type = "regex"; }
+        {
+          pattern = "Spotify";
+          replacement = "spotify";
+          type = "exact";
+        }
+        {
+          pattern = "beepertexts";
+          replacement = "beeper";
+          type = "exact";
+        }
+        {
+          pattern = "home assistant desktop";
+          replacement = "homeassistant-desktop";
+          type = "exact";
+        }
+        {
+          pattern = "com.transmissionbt.transmission";
+          replacement = "transmission-gtk";
+          type = "contains";
+        }
+        {
+          pattern = "^steam_app_(\\d+)$";
+          replacement = "steam_icon_$1";
+          type = "regex";
+        }
       ];
       type = lib.types.listOf lib.types.anything;
       description = "Rules for resolving app IDs to icon names. type: exact | contains | regex.";
@@ -827,9 +879,25 @@ in
           position = 0;
           screenPreferences = [ "all" ];
           showOnLastDisplay = true;
-          leftWidgets = [ "launcherButton" "workspaceSwitcher" "focusedWindow" ];
-          centerWidgets = [ "music" "clock" "weather" ];
-          rightWidgets = [ "systemTray" "clipboard" "cpuUsage" "memUsage" "notificationButton" "battery" "controlCenterButton" ];
+          leftWidgets = [
+            "launcherButton"
+            "workspaceSwitcher"
+            "focusedWindow"
+          ];
+          centerWidgets = [
+            "music"
+            "clock"
+            "weather"
+          ];
+          rightWidgets = [
+            "systemTray"
+            "clipboard"
+            "cpuUsage"
+            "memUsage"
+            "notificationButton"
+            "battery"
+            "controlCenterButton"
+          ];
           spacing = 4;
           innerPadding = 4;
           bottomGap = 0;
@@ -952,7 +1020,7 @@ in
 
     # ── Weather ────────────────────────────────────────────────────────────
     use_fahrenheit = lib.mkOption {
-      default = false;
+      default = true;
       type = lib.types.bool;
       description = "Display temperatures in Fahrenheit (default: Celsius).";
     };
@@ -1451,7 +1519,14 @@ in
     };
 
     power_menu_actions = lib.mkOption {
-      default = [ "reboot" "logout" "poweroff" "lock" "suspend" "restart" ];
+      default = [
+        "reboot"
+        "logout"
+        "poweroff"
+        "lock"
+        "suspend"
+        "restart"
+      ];
       type = lib.types.listOf lib.types.str;
       description = "Ordered list of actions shown in the power menu.";
     };
@@ -1682,8 +1757,14 @@ in
 
     matugen_template_neovim_settings = lib.mkOption {
       default = {
-        dark = { baseTheme = "github_dark"; harmony = 0.5; };
-        light = { baseTheme = "github_light"; harmony = 0.5; };
+        dark = {
+          baseTheme = "github_dark";
+          harmony = 0.5;
+        };
+        light = {
+          baseTheme = "github_light";
+          harmony = 0.5;
+        };
       };
       type = lib.types.anything;
       description = "Neovim matugen template settings for dark and light mode variants.";
@@ -2099,9 +2180,18 @@ in
       default = {
         theme = "System Default";
         size = 24;
-        niri = { hideWhenTyping = false; hideAfterInactiveMs = 0; };
-        hyprland = { hideOnKeyPress = false; hideOnTouch = false; inactiveTimeout = 0; };
-        dwl = { cursorHideTimeout = 0; };
+        niri = {
+          hideWhenTyping = false;
+          hideAfterInactiveMs = 0;
+        };
+        hyprland = {
+          hideOnKeyPress = false;
+          hideOnTouch = false;
+          inactiveTimeout = 0;
+        };
+        dwl = {
+          cursorHideTimeout = 0;
+        };
       };
       type = lib.types.anything;
       description = "Cursor theme, size, and compositor-specific hide-on-inactivity settings.";
