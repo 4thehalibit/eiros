@@ -17,7 +17,6 @@ The core repo defines the module schemas and defaults. Personal hardware and use
 - **Shell toolchain** — zoxide, atuin, delta, lazygit, pay-respects, and optional Zellij multiplexer alongside the existing fzf/yazi/eza/bat/ripgrep stack
 - **Declarative Neovim** — fully configured via nixvim with LSP, treesitter, completion, telescope, and plugin ecosystem
 - **Binary compatibility** — nix-ld provides a dynamic linker stub for unpatched executables; nix-alien wraps them in an auto-detected FHS environment when the stub isn't enough
-- **System-wide theming** — optional Stylix integration derives a color palette from your wallpaper and applies it to GTK, Qt, terminals, and syntax highlighting
 - **Animated wallpapers** — DMS linux-wallpaperengine plugin renders Steam Workshop Wallpaper Engine scenes via `linux-wallpaperengine`
 
 ## Directory Structure
@@ -136,7 +135,7 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.locale.*` | Timezone, timesync, i18n locale and LC_ categories |
 | `eiros.system.networking.*` | Hostname, DNS, NetworkManager, IWD, Avahi mDNS, TCP BBR congestion control + network buffer tuning |
 | `eiros.system.security.*` | Firewall, SSH, GPG, polkit, polkit authentication agent, sops-nix secrets, mutable user accounts |
-| `eiros.system.desktop_environment.*` | MangoWC, DMS, XDG portals, keyring, keybind commands, Stylix system-wide theming (off by default — requires a wallpaper path), DMS linux-wallpaperengine plugin for animated Steam Workshop wallpapers |
+| `eiros.system.desktop_environment.*` | MangoWC, DMS, XDG portals, keyring, keybind commands, DMS linux-wallpaperengine plugin for animated Steam Workshop wallpapers |
 | `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld, nix-alien FHS wrapper, nh helper, man pages and NixOS documentation |
 | `eiros.system.default_applications.*` | Neovim/nixvim opts and plugins, Zsh history and options, Vivaldi flags, fzf defaults, zoxide smart cd, atuin history, delta git diffs, lazygit TUI, pay-respects command corrector, Zellij multiplexer, Flatpak, mpv, imv, zathura, btop, ncdu, archive tools (zip/p7zip), MangoHUD performance overlay, GStreamer multimedia codecs, Nix LSP and formatter, jq, linux-wallpaperengine |
 | `eiros.system.virtualization.*` | KVM, Distrobox (Docker backend, NVIDIA CDI), Virt Manager, Windows 11 guest support (swtpm TPM 2.0, OVMFFull Secure Boot) |
@@ -187,10 +186,11 @@ Applied to all users when `mangowc.default_keybinds.enable = true` (the default)
 
 | Keybind | Action |
 |---|---|
-| `Super + T` | Launch terminal (default: `ghostty`) |
-| `Super + F` | Launch file browser (default: `ghostty -e yazi`) |
+| `Super + T` | Launch terminal |
+| `Super + F` | Launch file browser |
+| `Super + B` | Launch browser (when `vivaldi.enable = true`) |
 
-The commands behind these binds are configurable:
+The `terminal` and `file_browser` commands auto-derive from the enabled packages — when `ghostty.enable` and `yazi.enable` are true (the defaults), they resolve to the Nix store paths of those binaries. Override explicitly if needed:
 
 ```nix
 eiros.system.desktop_environment.mangowc.default_keybinds.commands = {
@@ -240,5 +240,4 @@ These keybinds are only active when `eiros.system.desktop_environment.dank_mater
 | `eiros_hardware` | lcleveland/eiros.hardware | Hardware configuration (override with your own) |
 | `eiros_users` | lcleveland/eiros.users | User configuration (override with your own) |
 | `sops-nix` | Mic92/sops-nix | Declarative secret management via SOPS + age/GPG |
-| `stylix` | nix-community/stylix | System-wide theming from a wallpaper image |
 | `dms_wallpaperengine` | sgtaziz/dms-wallpaperengine | DMS plugin source for animated Steam Workshop wallpapers |

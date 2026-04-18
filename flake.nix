@@ -13,7 +13,6 @@
       nixpkgs,
       nixvim,
       sops-nix,
-      stylix,
       self,
       ...
     }:
@@ -30,7 +29,6 @@
           nixpkgs
           nixvim
           sops-nix
-          stylix
           ;
       };
 
@@ -48,7 +46,6 @@
           nix-index-database.nixosModules.default
           nixvim.nixosModules.nixvim
           sops-nix.nixosModules.sops
-          stylix.nixosModules.stylix
           { nixpkgs.overlays = [ nix-alien.overlays.default ]; }
         ]
         ++ (import_modules ./system)
@@ -103,11 +100,6 @@
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    stylix = {
-      url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

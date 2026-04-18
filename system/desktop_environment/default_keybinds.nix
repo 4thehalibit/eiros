@@ -7,6 +7,10 @@ let
   dms_enabled = config.eiros.system.desktop_environment.dank_material_shell.enable;
   eiros_commands = config.eiros.system.desktop_environment.mangowc.default_keybinds.commands;
 
+  eiros_ghostty = config.eiros.system.default_applications.ghostty;
+  eiros_yazi    = config.eiros.system.default_applications.yazi;
+  eiros_vivaldi = config.eiros.system.default_applications.vivaldi;
+
   tags = builtins.genList (i: i + 1) 9;
 
   # Generate SUPER+1..9 binds to switch to tags 1–9.
@@ -68,6 +72,10 @@ let
     brightness_down = { modifier_keys = [ ]; flag_modifiers = [ "s" ]; key_symbol = "XF86MonBrightnessDown"; mangowc_command = "spawn_shell"; command_arguments = "brightnessctl set 10%-"; };
   };
 
+  browser_bind = lib.optionalAttrs eiros_vivaldi.enable {
+    launch_browser = { modifier_keys = [ "SUPER" ]; flag_modifiers = [ "s" ]; key_symbol = "b"; mangowc_command = "spawn"; command_arguments = lib.getExe eiros_vivaldi.package; };
+  };
+
   dms_binds = lib.optionalAttrs dms_enabled {
     launch_spotlight = { modifier_keys = [ "SUPER" ];         flag_modifiers = [ "s" ]; key_symbol = "d";      mangowc_command = "spawn_shell"; command_arguments = "dms ipc call spotlight toggle"; };
     lock_screen      = { modifier_keys = [ "SUPER" ];         flag_modifiers = [ "s" ]; key_symbol = "Escape"; mangowc_command = "spawn_shell"; command_arguments = "dms ipc call lock lock"; };
@@ -83,8 +91,13 @@ in
   options.eiros.system.desktop_environment.mangowc.default_keybinds = {
     commands = {
       terminal = lib.mkOption {
-        default = "ghostty";
-        description = "Command used to launch the terminal emulator.";
+        default = if eiros_ghostty.enable then lib.getExe eiros_ghostty.package else "ghostty";
+        defaultText = lib.literalExpression ''
+          if eiros.system.default_applications.ghostty.enable
+          then lib.getExe eiros.system.default_applications.ghostty.package
+          else "ghostty"
+        '';
+        description = "Command used to launch the terminal emulator. Defaults to the ghostty store path when ghostty is enabled.";
         example = lib.literalExpression ''
           {
             eiros.system.desktop_environment.mangowc.default_keybinds.commands.terminal = "alacritty";
@@ -94,8 +107,16 @@ in
       };
 
       file_browser = lib.mkOption {
-        default = "ghostty -e yazi";
-        description = "Command used to launch the file browser.";
+        default =
+          if eiros_ghostty.enable && eiros_yazi.enable
+          then "${lib.getExe eiros_ghostty.package} -e ${lib.getExe eiros_yazi.package}"
+          else "ghostty -e yazi";
+        defaultText = lib.literalExpression ''
+          if eiros.system.default_applications.ghostty.enable && eiros.system.default_applications.yazi.enable
+          then "''${lib.getExe ghostty.package} -e ''${lib.getExe yazi.package}"
+          else "ghostty -e yazi"
+        '';
+        description = "Command used to launch the file browser. Defaults to ghostty+yazi store paths when both are enabled.";
         example = lib.literalExpression ''
           {
             eiros.system.desktop_environment.mangowc.default_keybinds.commands.file_browser = "alacritty -e lf";
@@ -124,5 +145,5 @@ in
   };
 
   config.eiros.system.desktop_environment.mangowc.default_keybinds.keybinds =
-    view_tag_binds // move_to_tag_binds // directional_binds // static_binds // media_binds // dms_binds;
+    view_tag_binds // move_to_tag_binds // directional_binds // static_binds // media_binds // dms_binds // browser_bind;
 }
