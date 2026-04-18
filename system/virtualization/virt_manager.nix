@@ -73,7 +73,7 @@ in
 
     windows_11.enable = lib.mkOption {
       default = true;
-      description = "Enable Windows 11 guest VM support (swtpm TPM 2.0 emulator and OVMFFull UEFI firmware with Secure Boot).";
+      description = "Enable Windows 11 guest VM support (swtpm TPM 2.0 emulator; UEFI/Secure Boot firmware is bundled with QEMU by default).";
       example = lib.literalExpression ''
         {
           eiros.system.virtualization.virt_manager.windows_11.enable = true;
@@ -113,10 +113,6 @@ in
           }
           (lib.mkIf eiros_virt_manager.windows_11.enable {
             swtpm.enable = true;
-            ovmf = {
-              enable = true;
-              packages = [ pkgs.OVMFFull ];
-            };
           })
         ];
       };
