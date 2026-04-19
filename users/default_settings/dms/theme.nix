@@ -15,7 +15,7 @@
     };
 
     current_theme_category = lib.mkOption {
-      default = "generic";
+      default = "auto";
       type = lib.types.str;
       description = "Theme category used for theme registry grouping.";
       example = lib.literalExpression ''
