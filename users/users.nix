@@ -5,7 +5,7 @@ let
   helpers = import ../resources/nix/mangowc_helpers.nix lib;
   inherit (helpers) mangowc_generator make_mangowc_config keybind_submodule;
 
-  default_keybinds = config.eiros.system.desktop_environment.mangowc.default_keybinds.keybinds;
+  default_keybinds = config.eiros.system.user_defaults.mangowc.keybinds;
 
   # Merges system default keybinds with per-user overrides, then injects systemd env-import
   # and DMS exec-once entries so MangoWC starts with the correct session environment.

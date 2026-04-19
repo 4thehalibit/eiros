@@ -41,23 +41,25 @@ eiros/
 │   └── virtualization/     # KVM, Docker, Distrobox, Virt Manager
 ├── users/
 │   ├── default_settings/
-│   │   └── dms/            # System-wide DMS user setting defaults (one file per topic)
-│   │       ├── theme.nix
-│   │       ├── appearance.nix
-│   │       ├── bar.nix
-│   │       ├── control_center.nix
-│   │       ├── media.nix
-│   │       ├── notifications.nix
-│   │       ├── lock_screen.nix
-│   │       ├── power.nix
-│   │       ├── app_theming.nix
-│   │       ├── dock.nix
-│   │       ├── launcher.nix
-│   │       ├── greeter.nix
-│   │       ├── display.nix
-│   │       ├── widgets.nix
-│   │       ├── misc.nix
-│   │       └── settings_assembly.nix
+│   │   ├── dms/            # System-wide DMS user setting defaults (one file per topic)
+│   │   │   ├── theme.nix
+│   │   │   ├── appearance.nix
+│   │   │   ├── bar.nix
+│   │   │   ├── control_center.nix
+│   │   │   ├── media.nix
+│   │   │   ├── notifications.nix
+│   │   │   ├── lock_screen.nix
+│   │   │   ├── power.nix
+│   │   │   ├── app_theming.nix
+│   │   │   ├── dock.nix
+│   │   │   ├── launcher.nix
+│   │   │   ├── greeter.nix
+│   │   │   ├── display.nix
+│   │   │   ├── widgets.nix
+│   │   │   ├── misc.nix
+│   │   │   └── settings_assembly.nix
+│   │   └── mangowc/        # System-wide MangoWC user defaults
+│   │       └── keybinds.nix
 │   └── users.nix           # User module schema
 └── resources/
     └── nix/
@@ -162,13 +164,14 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.locale.*` | Timezone, timesync, i18n locale and LC_ categories |
 | `eiros.system.networking.*` | Hostname, DNS, NetworkManager, IWD, Avahi mDNS, TCP BBR congestion control + network buffer tuning |
 | `eiros.system.security.*` | Firewall, SSH, GPG, polkit, polkit authentication agent, sops-nix secrets, mutable user accounts |
-| `eiros.system.desktop_environment.*` | MangoWC, DMS, XDG portals, keyring, keybind commands, DMS linux-wallpaperengine plugin for animated Steam Workshop wallpapers, DMS wallpaperCarousel plugin, DMS dockerManager plugin (auto-enabled with Docker), DMS sshConnections launcher plugin |
+| `eiros.system.desktop_environment.*` | MangoWC, DMS, XDG portals, keyring, DMS linux-wallpaperengine plugin for animated Steam Workshop wallpapers, DMS wallpaperCarousel plugin, DMS dockerManager plugin (auto-enabled with Docker), DMS sshConnections launcher plugin |
 | `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld, nix-alien FHS wrapper, nh helper, man pages and NixOS documentation |
 | `eiros.system.default_applications.*` | Neovim/nixvim opts and plugins, Zsh history and options, Vivaldi flags, fzf defaults, zoxide smart cd, atuin history, delta git diffs, lazygit TUI, pay-respects command corrector, Zellij multiplexer, Flatpak, mpv, imv, zathura, btop, ncdu, archive tools (zip/p7zip), MangoHUD performance overlay, GStreamer multimedia codecs, Nix LSP and formatter, jq, linux-wallpaperengine |
 | `eiros.system.virtualization.*` | Docker daemon, KVM, Distrobox (NVIDIA CDI), Virt Manager, Windows 11 guest support (swtpm TPM 2.0, OVMFFull Secure Boot) |
 | `eiros.system.fonts.*` | Font packages and fontconfig defaults |
 | `eiros.system.logging.*` | journald retention, rate limiting, vacuum |
 | `eiros.system.user_defaults.dms.<topic>.*` | System-wide defaults for all 200+ DMS user settings, namespaced by topic (`dms.bar.*`, `dms.dock.*`, `dms.appearance.*`, `dms.notifications.*`, `dms.lock_screen.*`, `dms.power.*`, `dms.launcher.*`, `dms.widgets.*`, etc.). Options use `.enable` style for feature toggles and include `example` fields showing full configuration paths. Assembled into `dms._settings` and written to `~/.config/DankMaterialShell/settings.json` |
+| `eiros.system.user_defaults.mangowc.*` | System-wide defaults for the MangoWC keybind set (`mangowc.keybinds`) and launch commands (`mangowc.commands.terminal`, `mangowc.commands.file_browser`). Commands auto-derive from enabled packages; keybinds are merged with per-user overrides at build time |
 | `eiros.users.*` | User accounts, MangoWC keybinds, wallpaper, per-user DMS settings override |
 
 ## Default MangoWC Keybinds
@@ -221,7 +224,7 @@ Applied to all users when `mangowc.default_keybinds.enable = true` (the default)
 The `terminal` and `file_browser` commands auto-derive from the enabled packages — when `ghostty.enable` and `yazi.enable` are true (the defaults), they resolve to the Nix store paths of those binaries. Override explicitly if needed:
 
 ```nix
-eiros.system.desktop_environment.mangowc.default_keybinds.commands = {
+eiros.system.user_defaults.mangowc.commands = {
   terminal     = "foot";
   file_browser = "foot -e yazi";
 };

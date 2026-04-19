@@ -1,5 +1,5 @@
 # wallpaperCarousel DMS plugin — interactive 3D carousel for wallpaper selection.
-# Keybind (SUPER+w) is declared in default_keybinds.nix alongside other DMS binds.
+# Keybind (SUPER+w) is declared in users/default_settings/mangowc/keybinds.nix alongside other DMS binds.
 { inputs, pkgs, ... }:
 {
   eiros.system.desktop_environment.dankmaterialshell.plugins = {

@@ -1,11 +1,11 @@
 # Defines the default MangoWC keybind set: tag navigation, window management, media, and DMS actions.
 { config, lib, ... }:
 let
-  helpers = import ../../resources/nix/mangowc_helpers.nix lib;
+  helpers = import ../../../resources/nix/mangowc_helpers.nix lib;
   inherit (helpers) keybind_submodule;
 
   dms_enabled = config.eiros.system.desktop_environment.dankmaterialshell.enable;
-  eiros_commands = config.eiros.system.desktop_environment.mangowc.default_keybinds.commands;
+  eiros_commands = config.eiros.system.user_defaults.mangowc.commands;
 
   eiros_ghostty = config.eiros.system.default_applications.ghostty;
   eiros_yazi    = config.eiros.system.default_applications.yazi;
@@ -89,7 +89,7 @@ let
   };
 in
 {
-  options.eiros.system.desktop_environment.mangowc.default_keybinds = {
+  options.eiros.system.user_defaults.mangowc = {
     commands = {
       terminal = lib.mkOption {
         default = if eiros_ghostty.enable then lib.getExe eiros_ghostty.package else "ghostty";
@@ -101,7 +101,7 @@ in
         description = "Command used to launch the terminal emulator. Defaults to the ghostty store path when ghostty is enabled.";
         example = lib.literalExpression ''
           {
-            eiros.system.desktop_environment.mangowc.default_keybinds.commands.terminal = "alacritty";
+            eiros.system.user_defaults.mangowc.commands.terminal = "alacritty";
           }
         '';
         type = lib.types.str;
@@ -120,7 +120,7 @@ in
         description = "Command used to launch the file browser. Defaults to ghostty+yazi store paths when both are enabled.";
         example = lib.literalExpression ''
           {
-            eiros.system.desktop_environment.mangowc.default_keybinds.commands.file_browser = "alacritty -e lf";
+            eiros.system.user_defaults.mangowc.commands.file_browser = "alacritty -e lf";
           }
         '';
         type = lib.types.str;
@@ -132,7 +132,7 @@ in
       description = "The resolved set of default MangoWC keybinds. Read this from users.nix to merge with per-user keybinds.";
       example = lib.literalExpression ''
         {
-          eiros.system.desktop_environment.mangowc.default_keybinds.keybinds = {
+          eiros.system.user_defaults.mangowc.keybinds = {
             close_window = {
               modifier_keys = [ "SUPER" ];
               key_symbol = "q";
@@ -145,6 +145,6 @@ in
     };
   };
 
-  config.eiros.system.desktop_environment.mangowc.default_keybinds.keybinds =
+  config.eiros.system.user_defaults.mangowc.keybinds =
     view_tag_binds // move_to_tag_binds // directional_binds // static_binds // media_binds // dms_binds // browser_bind;
 }
