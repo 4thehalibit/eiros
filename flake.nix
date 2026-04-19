@@ -5,6 +5,7 @@
     {
       dank_material_shell,
       dms_docker_manager,
+      dms_ssh_connections,
       wallpaper_carousel,
       eiros_hardware,
       eiros_users,
@@ -23,6 +24,7 @@
         inherit
           dank_material_shell
           dms_docker_manager
+          dms_ssh_connections
           wallpaper_carousel
           eiros_hardware
           eiros_users
@@ -67,6 +69,11 @@
 
     dms_docker_manager = {
       url = "github:LuckShiba/DmsDockerManager";
+      flake = false;
+    };
+
+    dms_ssh_connections = {
+      url = "github:merdely/dms-plugins";
       flake = false;
     };
 
