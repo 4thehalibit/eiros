@@ -85,13 +85,13 @@
     };
 
     wind_speed_unit = lib.mkOption {
-      default = "kmh";
+      default = "mph";
       type = lib.types.str;
       description = "Wind speed unit. Options: kmh, mph, ms, kn.";
     };
 
     use_auto_location = lib.mkOption {
-      default = false;
+      default = true;
       type = lib.types.bool;
       description = "Automatically detect location for weather data.";
     };
