@@ -4,9 +4,9 @@
   options.eiros.system.user_defaults.dms.theme = {
 
     current_theme_name = lib.mkOption {
-      default = "purple";
+      default = "dynamic";
       type = lib.types.str;
-      description = "Active DMS built-in theme name (e.g. purple, blue, green, red, orange, yellow, pink, grey) or 'custom' to use customThemeFile.";
+      description = "Active DMS theme name. Built-in options: purple, blue, green, red, orange, yellow, pink, grey. Use 'dynamic' for auto wallpaper-based colors (matugen), 'custom' to use customThemeFile.";
       example = lib.literalExpression ''
         {
           eiros.system.user_defaults.dms.theme.current_theme_name = "blue";
