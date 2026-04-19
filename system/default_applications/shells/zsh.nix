@@ -2,8 +2,6 @@
 { config, lib, pkgs, ... }:
 let
   eiros_zsh = config.eiros.system.default_applications.shells.zsh;
-  eiros_eza = config.eiros.system.default_applications.file_management.eza;
-  eiros_bat = config.eiros.system.default_applications.file_management.bat;
 in
 {
   options.eiros.system.default_applications.shells.zsh = {
@@ -146,18 +144,6 @@ in
 
       histSize = eiros_zsh.hist_size;
       setOptions = eiros_zsh.set_options;
-
-      shellAliases = lib.mkMerge [
-        (lib.mkIf eiros_eza.enable {
-          ls   = "eza --icons";
-          ll   = "eza -lh --icons --git";
-          la   = "eza -lah --icons --git";
-          tree = "eza --tree --icons";
-        })
-        (lib.mkIf eiros_bat.enable {
-          cat = "bat";
-        })
-      ];
 
       ohMyZsh = lib.mkIf eiros_zsh.oh_my_zsh.enable {
         enable = true;

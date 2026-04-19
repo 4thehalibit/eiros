@@ -193,6 +193,43 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.user_defaults.mangowc.*` | System-wide defaults for the MangoWC keybind set (`mangowc.keybinds`) and launch commands (`mangowc.commands.terminal`, `mangowc.commands.file_browser`). Commands auto-derive from enabled packages; keybinds are merged with per-user overrides at build time |
 | `eiros.users.*` | User accounts, MangoWC keybinds, wallpaper, per-user DMS settings override |
 
+## Default Shell Aliases
+
+All aliases are active only when `eiros.system.default_applications.shells.zsh.enable = true` (the default). Each alias has its own toggle — set the listed option to `false` to disable just the alias while keeping the tool installed.
+
+### File Management
+
+| Alias | Expands To | Disable Option |
+|---|---|---|
+| `cat` | `bat` | `eiros.system.default_applications.file_management.bat.override.enable` |
+| `ls` | `eza --icons` | `eiros.system.default_applications.file_management.eza.override.enable` |
+| `ll` | `eza -lh --icons --git` | `eiros.system.default_applications.file_management.eza.override.enable` |
+| `la` | `eza -lah --icons --git` | `eiros.system.default_applications.file_management.eza.override.enable` |
+| `tree` | `eza --tree --icons` | `eiros.system.default_applications.file_management.eza.override.enable` |
+| `find` | `fd` | `eiros.system.default_applications.file_management.fd.override.enable` |
+| `grep` | `rg` | `eiros.system.default_applications.file_management.ripgrep.override.enable` |
+
+### System Monitoring
+
+| Alias | Expands To | Disable Option |
+|---|---|---|
+| `ps` | `procs` | `eiros.system.default_applications.system_monitoring.procs.override.enable` |
+| `df` | `duf` | `eiros.system.default_applications.system_monitoring.duf.override.enable` |
+| `ping` | `gping` | `eiros.system.default_applications.system_monitoring.gping.override.enable` |
+
+### Version Control
+
+| Alias | Expands To | Disable Option |
+|---|---|---|
+| `lg` | `lazygit` | `eiros.system.default_applications.version_control.lazygit.alias.enable` |
+
+### Editors
+
+| Alias | Expands To | Disable Option |
+|---|---|---|
+| `vi` | `nvim` | `eiros.system.default_applications.editors.neovim.vi_alias.enable` |
+| `vim` | `nvim` | `eiros.system.default_applications.editors.neovim.vim_alias.enable` |
+
 ## Default MangoWC Keybinds
 
 Applied to all users when `mangowc.default_keybinds.enable = true` (the default). Per-user keybinds with matching names override these.
