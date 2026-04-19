@@ -8,4 +8,10 @@
       src = inputs.dms_docker_manager;
     };
   };
+
+  eiros.system.user_defaults.dms.external_plugin_settings = {
+    dockerManager = {
+      terminalApp = "ghostty";
+    };
+  };
 }
