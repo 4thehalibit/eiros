@@ -7,9 +7,9 @@ let
   dms_enabled = config.eiros.system.desktop_environment.dankmaterialshell.enable;
   eiros_commands = config.eiros.system.user_defaults.mangowc.commands;
 
-  eiros_ghostty = config.eiros.system.default_applications.ghostty;
-  eiros_yazi    = config.eiros.system.default_applications.yazi;
-  eiros_vivaldi = config.eiros.system.default_applications.vivaldi;
+  eiros_ghostty = config.eiros.system.default_applications.shells.ghostty;
+  eiros_yazi    = config.eiros.system.default_applications.file_management.yazi;
+  eiros_vivaldi = config.eiros.system.default_applications.browsers.vivaldi;
 
   tags = builtins.genList (i: i + 1) 9;
 
@@ -94,8 +94,8 @@ in
       terminal = lib.mkOption {
         default = if eiros_ghostty.enable then lib.getExe eiros_ghostty.package else "ghostty";
         defaultText = lib.literalExpression ''
-          if eiros.system.default_applications.ghostty.enable
-          then lib.getExe eiros.system.default_applications.ghostty.package
+          if eiros.system.default_applications.shells.ghostty.enable
+          then lib.getExe eiros.system.default_applications.shells.ghostty.package
           else "ghostty"
         '';
         description = "Command used to launch the terminal emulator. Defaults to the ghostty store path when ghostty is enabled.";
@@ -113,7 +113,7 @@ in
           then "${lib.getExe eiros_ghostty.package} -e ${lib.getExe eiros_yazi.package}"
           else "ghostty -e yazi";
         defaultText = lib.literalExpression ''
-          if eiros.system.default_applications.ghostty.enable && eiros.system.default_applications.yazi.enable
+          if eiros.system.default_applications.shells.ghostty.enable && eiros.system.default_applications.file_management.yazi.enable
           then "''${lib.getExe ghostty.package} -e ''${lib.getExe yazi.package}"
           else "ghostty -e yazi"
         '';

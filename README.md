@@ -14,7 +14,7 @@ The core repo defines the module schemas and defaults. Personal hardware and use
 - **Performance tuning** — TCP BBR congestion control, network buffer tuning, kernel sysctl defaults (vm, scheduler, memory overcommit), PipeWire low-latency quantum
 - **Security-first defaults** — UFW firewall enabled, SSH disabled, no password auth over SSH, optional sops-nix secret management
 - **Virtualization** — KVM/QEMU, Libvirt, Docker (own module, NVIDIA CDI), Distrobox, Virt Manager, Windows 11 guest support (swtpm TPM 2.0 + Secure Boot)
-- **Shell toolchain** — zoxide, atuin, delta, lazygit, pay-respects, and optional Zellij multiplexer alongside the existing fzf/yazi/eza/bat/ripgrep stack
+- **Shell toolchain** — zoxide, atuin, delta, lazygit, pay-respects, and optional Zellij multiplexer alongside the existing fzf/yazi/eza/bat/ripgrep stack; modern replacements for sed (sd), df (duf), ps (procs), and ping (gping); xh HTTP client, tealdeer command examples, and hyperfine benchmarking
 - **Declarative Neovim** — fully configured via nixvim with LSP, treesitter, completion, telescope, and plugin ecosystem
 - **Binary compatibility** — nix-ld provides a dynamic linker stub for unpatched executables; nix-alien wraps them in an auto-detected FHS environment when the stub isn't enough
 - **Run-any-package** — comma + nix-index-database lets you run any nixpkgs program without installing it (`nix-index-database` provides a pre-built file-to-package index)
@@ -27,7 +27,17 @@ eiros/
 ├── system/                 # System module schemas and defaults
 │   ├── audio/              # PipeWire, pactl, playerctl, EasyEffects, Helvum
 │   ├── boot/               # Bootloader, kernel package, kernel params, Plymouth
-│   ├── default_applications/# Neovim, Git, Zsh, Ghostty, Vivaldi
+│   ├── default_applications/# Categorized into subfolders; auto-loaded recursively
+│   │   ├── shells/         # zsh, ghostty, zellij, atuin, zoxide, fzf, pay_respects
+│   │   ├── editors/        # neovim, nixvim, nix_tools
+│   │   ├── version_control/# git, delta, lazygit
+│   │   ├── file_management/# yazi, eza, fd, ripgrep, sd, bat, file, unzip, archive
+│   │   ├── system_monitoring/ # btop, procs, ncdu, duf, gping, pciutils, usbutils
+│   │   ├── media/          # mpv, imv, zathura, multimedia
+│   │   ├── network/        # curl, wget, xh
+│   │   ├── utilities/      # qalculate, tealdeer, hyperfine, wl_clipboard, flatpak
+│   │   ├── gaming/         # gamemode, mangohud
+│   │   └── browsers/       # vivaldi
 │   ├── desktop_environment/# MangoWC, XDG portals, Wayland
 │   │   └── dankmaterialshell/ # DMS options and plugins
 │   │       └── plugins/    # One file per DMS plugin
@@ -166,7 +176,16 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.security.*` | Firewall, SSH, GPG, polkit, polkit authentication agent, sops-nix secrets, mutable user accounts |
 | `eiros.system.desktop_environment.*` | MangoWC, DMS, XDG portals, keyring, dconf, DMS wallpaperCarousel plugin, DMS dockerManager plugin (auto-enabled with Docker), DMS sshConnections launcher plugin; optional audio visualizer (`audio_wavelength`), CalDAV calendar sync (`calendar_events`), and VPN management widget (`vpn`) — all three disabled by default |
 | `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld, nix-alien FHS wrapper, nh helper, comma + nix-index-database (run any nixpkgs program without installing), man pages and NixOS documentation |
-| `eiros.system.default_applications.*` | Neovim/nixvim opts and plugins, Zsh history and options, Vivaldi flags, fzf defaults, zoxide smart cd, atuin history, delta git diffs, lazygit TUI, pay-respects command corrector, Zellij multiplexer, Flatpak, mpv, imv, zathura, btop, ncdu, archive tools (zip/p7zip), MangoHUD performance overlay, GStreamer multimedia codecs, Nix LSP (nil) and formatter (nixfmt), jq |
+| `eiros.system.default_applications.shells.*` | Zsh (history, options, Oh My Zsh, autosuggestions, syntax highlighting), Ghostty terminal, Zellij multiplexer, atuin history search, zoxide smart cd, fzf fuzzy finder, pay-respects command corrector |
+| `eiros.system.default_applications.editors.*` | Neovim (default editor, vi/vim aliases), nixvim declarative config (LSP, treesitter, telescope, completion, plugins), Nix LSP (nil) and formatter (nixfmt) |
+| `eiros.system.default_applications.version_control.*` | Git, delta syntax-highlighted diffs, lazygit TUI |
+| `eiros.system.default_applications.file_management.*` | yazi file manager, eza (ls), fd (find), ripgrep, sd (sed replacement), bat (cat), file type detection, unzip, archive tools (zip/p7zip) |
+| `eiros.system.default_applications.system_monitoring.*` | btop, procs (ps replacement), ncdu disk usage, duf (df replacement), gping visual ping, pciutils (lspci), usbutils (lsusb) |
+| `eiros.system.default_applications.media.*` | mpv default media player, imv image viewer, zathura PDF viewer, GStreamer multimedia codecs |
+| `eiros.system.default_applications.network.*` | curl, wget, xh (HTTP client) |
+| `eiros.system.default_applications.utilities.*` | qalculate GTK calculator, tealdeer (tldr), hyperfine benchmarking, wl-clipboard, Flatpak |
+| `eiros.system.default_applications.gaming.*` | GameMode CPU performance profiles, MangoHUD in-game overlay |
+| `eiros.system.default_applications.browsers.*` | Vivaldi (Wayland/Ozone flags, dark mode, GPU sandbox options) |
 | `eiros.system.virtualization.*` | Docker daemon, KVM, Distrobox (NVIDIA CDI), Virt Manager, Windows 11 guest support (swtpm TPM 2.0, OVMFFull Secure Boot) |
 | `eiros.system.fonts.*` | Font packages and fontconfig defaults |
 | `eiros.system.logging.*` | journald retention, rate limiting, vacuum |
