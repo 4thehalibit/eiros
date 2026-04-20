@@ -12,8 +12,9 @@ The core repo defines the module schemas and defaults. Personal hardware and use
 - **Home directory management** via [hjem](https://github.com/feel-co/hjem)
 - **Hardware support** — NVIDIA PRIME (offload/sync), Intel/AMD CPU microcode, Bluetooth, printing, fingerprint, zram compressed swap
 - **Performance tuning** — TCP BBR congestion control, network buffer tuning, kernel sysctl defaults (vm, scheduler, memory overcommit), PipeWire low-latency quantum
-- **Security-first defaults** — UFW firewall enabled, SSH disabled, no password auth over SSH, kernel/filesystem hardening sysctl (fs.protected_*, kptr_restrict, bpf_jit_harden), ICMP redirect blocking, sudo restricted to wheel group, dbus-broker, kernel module blacklisting (FireWire DMA, legacy protocols), optional sops-nix secret management
+- **Security-first defaults** — UFW firewall enabled, SSH disabled, no password auth over SSH, kernel/filesystem hardening sysctl (fs.protected_*, kptr_restrict, bpf_jit_harden), ICMP redirect blocking, sudo restricted to wheel group, dbus-broker, kernel module blacklisting (FireWire DMA, legacy protocols), optional sops-nix secret management, optional PC/SC daemon for YubiKey and hardware security keys (SSH/GPG/FIDO2)
 - **Virtualization** — KVM/QEMU, Libvirt, Docker (own module, NVIDIA CDI), Distrobox, Virt Manager, Windows 11 guest support (swtpm TPM 2.0 + Secure Boot)
+- **Gaming** — GameMode CPU performance profiles, MangoHUD in-game overlay, Wayland↔X11 clipboard sync for Steam/Proton games (autocutsel PRIMARY↔CLIPBOARD bridge + polling daemon; auto-injects wl-clipboard-x11 and xdotool into Steam's FHS container when Steam is enabled)
 - **Shell toolchain** — zoxide, atuin, delta, lazygit, pay-respects, and optional Zellij multiplexer alongside the existing fzf/yazi/eza/bat/ripgrep stack; modern replacements for sed (sd), df (duf), ps (procs), and ping (gping); xh HTTP client, tealdeer command examples, and hyperfine benchmarking
 - **Declarative Neovim** — fully configured via nixvim with LSP, treesitter, completion, telescope, and plugin ecosystem
 - **Binary compatibility** — nix-ld provides a dynamic linker stub for unpatched executables; nix-alien wraps them in an auto-detected FHS environment when the stub isn't enough
@@ -36,7 +37,7 @@ eiros/
 │   │   ├── media/          # mpv, imv, zathura, multimedia
 │   │   ├── network/        # curl, wget, xh
 │   │   ├── utilities/      # qalculate, tealdeer, hyperfine, wl_clipboard, flatpak
-│   │   ├── gaming/         # gamemode, mangohud
+│   │   ├── gaming/         # gamemode, mangohud, steam_clipboard
 │   │   └── browsers/       # vivaldi
 │   ├── desktop_environment/# MangoWC, XDG portals, Wayland
 │   │   └── dankmaterialshell/ # DMS options and plugins
@@ -47,7 +48,7 @@ eiros/
 │   ├── logging/            # journald retention and rate limiting
 │   ├── networking/         # NetworkManager, hostname, DNS
 │   ├── nix/                # Flakes, GC, cache, direnv, nix-ld, nix-alien, man pages
-│   ├── security/           # Firewall, SSH, GPG, polkit, sops, mutable accounts
+│   ├── security/           # Firewall, SSH, GPG, polkit, sops, mutable accounts, hardening, dbus-broker, sudo, kernel_modules, pcscd
 │   └── virtualization/     # KVM, Docker, Distrobox, Virt Manager
 ├── users/
 │   ├── default_settings/
@@ -173,7 +174,7 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.audio.*` | pactl/playerctl keybind tools, PipeWire (ALSA, JACK, PulseAudio compat, RTKit), low-latency quantum tuning (default 512 samples), EasyEffects audio EQ (off by default), Helvum patchbay GUI (off by default) |
 | `eiros.system.locale.*` | Timezone, timesync, i18n locale and LC_ categories |
 | `eiros.system.networking.*` | Hostname, DNS, NetworkManager, IWD, Avahi mDNS, TCP BBR congestion control + network buffer tuning, ICMP redirect blocking |
-| `eiros.system.security.*` | Firewall, SSH, GPG, polkit, polkit authentication agent, sops-nix secrets, mutable user accounts, kernel/filesystem hardening sysctl, dbus-broker, sudo wheel restriction, kernel module blacklisting |
+| `eiros.system.security.*` | Firewall, SSH, GPG, polkit, polkit authentication agent, sops-nix secrets, mutable user accounts, kernel/filesystem hardening sysctl (fs_hardening / kernel_info_restrict / bpf_hardening sub-options), dbus-broker, sudo wheel restriction, kernel module blacklisting (firewire / legacy_protocols sub-options), optional PC/SC daemon for YubiKey and hardware security keys (off by default) |
 | `eiros.system.desktop_environment.*` | MangoWC, DMS, XDG portals, keyring, dconf, DMS wallpaperCarousel plugin, DMS dockerManager plugin (auto-enabled with Docker), DMS sshConnections launcher plugin; optional audio visualizer (`audio_wavelength`), CalDAV calendar sync (`calendar_events`), and VPN management widget (`vpn`) — all three disabled by default |
 | `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld, nix-alien FHS wrapper, nh helper, comma + nix-index-database (run any nixpkgs program without installing), man pages and NixOS documentation |
 | `eiros.system.default_applications.shells.*` | Zsh (history, options, Oh My Zsh, autosuggestions, syntax highlighting), Ghostty terminal, Zellij multiplexer, atuin history search, zoxide smart cd, fzf fuzzy finder, pay-respects command corrector |
@@ -184,7 +185,7 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.default_applications.media.*` | mpv default media player, imv image viewer, zathura PDF viewer, GStreamer multimedia codecs |
 | `eiros.system.default_applications.network.*` | curl, wget, xh (HTTP client) |
 | `eiros.system.default_applications.utilities.*` | qalculate GTK calculator, tealdeer (tldr), hyperfine benchmarking, wl-clipboard, Flatpak |
-| `eiros.system.default_applications.gaming.*` | GameMode CPU performance profiles, MangoHUD in-game overlay |
+| `eiros.system.default_applications.gaming.*` | GameMode CPU performance profiles, MangoHUD in-game overlay, steam_clipboard Wayland↔X11 clipboard bridge (autocutsel PRIMARY↔CLIPBOARD sync + Wayland polling daemon; auto-injects wl-clipboard-x11/xdotool into Steam FHS when Steam is enabled; on by default) |
 | `eiros.system.default_applications.browsers.*` | Vivaldi (Wayland/Ozone flags, dark mode, GPU sandbox options) |
 | `eiros.system.virtualization.*` | Docker daemon, KVM, Distrobox (NVIDIA CDI), Virt Manager, Windows 11 guest support (swtpm TPM 2.0, OVMFFull Secure Boot) |
 | `eiros.system.fonts.*` | Font packages and fontconfig defaults |
