@@ -1,4 +1,4 @@
-# Configures Vivaldi browser with Wayland/Ozone flags and optional NVIDIA/Vulkan ANGLE support.
+# Configures Vivaldi browser with Wayland/Ozone flags and optional NVIDIA/EGL ANGLE support.
 {
   config,
   lib,
@@ -19,16 +19,15 @@ let
       "--disable-zero-copy"
       "--num-raster-threads=1"
     ]
+    # Use EGL/OpenGL ANGLE backend on NVIDIA. The Vulkan ANGLE path fails to import
+    # Wayland compositor DMA-BUFs on hybrid AMD+NVIDIA systems: the compositor (running
+    # on the AMD display GPU) allocates buffers with AMD format modifiers that NVIDIA
+    # Vulkan rejects (VK_ERROR_FEATURE_NOT_PRESENT in DmaBufImageSiblingVkLinux:616).
+    # EGL handles cross-driver modifier negotiation more permissively. NVIDIA GL 4.6
+    # covers all WebGL2 requirements; --ignore-gpu-blocklist bypasses stale blocklist entries.
     ++ lib.optionals eiros_vivaldi.nvidia.enable [
-      "--use-angle=vulkan"
+      "--use-angle=gl"
       "--ignore-gpu-blocklist"
-    ]
-    # Vivaldi internally sets --render-node-override=renderD128 (AMD iGPU on this system).
-    # Override it to the NVIDIA render node so GBM allocates DMA-BUFs on NVIDIA, making
-    # them importable by ANGLE's NVIDIA Vulkan backend (avoids VK_ERROR_FEATURE_NOT_PRESENT).
-    # /dev/dri/nvidia-render is a udev-managed stable symlink (see services.udev.extraRules).
-    ++ lib.optionals (eiros_vivaldi.nvidia.enable && eiros_vivaldi.render_node.auto_detect) [
-      "--render-node-override=/dev/dri/nvidia-render"
     ]
     ++ lib.optionals (eiros_vivaldi.nvidia.enable && eiros_vivaldi.gpu_sandbox.disable) [
       "--disable-gpu-sandbox"
@@ -49,7 +48,7 @@ in
     nvidia = {
       enable = lib.mkOption {
         default = false;
-        description = "Enable NVIDIA-specific flags (--use-angle=vulkan, --ignore-gpu-blocklist) and render node override. Defaults to eiros.system.hardware.graphics.nvidia.enable. Required for WebGL2 on NVIDIA/Wayland with Vulkan ANGLE.";
+        description = "Enable NVIDIA-specific flags (--use-angle=gl, --ignore-gpu-blocklist). Defaults to eiros.system.hardware.graphics.nvidia.enable. Required for WebGL2 on NVIDIA/Wayland.";
         example = lib.literalExpression ''
           {
             eiros.system.default_applications.browsers.vivaldi.nvidia.enable = true;
@@ -62,23 +61,10 @@ in
     gpu_sandbox = {
       disable = lib.mkOption {
         default = true;
-        description = "Disable Chromium's GPU process sandbox (--disable-gpu-sandbox). Only takes effect when nvidia.enable = true. Required for Vulkan ANGLE on NVIDIA/Wayland — the Vulkan driver needs unrestricted access to GPU devices.";
+        description = "Disable Chromium's GPU process sandbox (--disable-gpu-sandbox). Only takes effect when nvidia.enable = true. May be required for EGL/ANGLE on NVIDIA/Wayland.";
         example = lib.literalExpression ''
           {
             eiros.system.default_applications.browsers.vivaldi.gpu_sandbox.disable = true;
-          }
-        '';
-        type = lib.types.bool;
-      };
-    };
-
-    render_node = {
-      auto_detect = lib.mkOption {
-        default = true;
-        description = "When nvidia.enable is true, create a udev rule that makes /dev/dri/nvidia-render a stable symlink to the NVIDIA GPU render node (matched by PCI vendor 0x10de), and pass it as --render-node-override. This overrides Vivaldi's internal AMD render node selection, fixing cross-GPU DMA-BUF import failures under Vulkan ANGLE. Disable to manage via extra_flags.";
-        example = lib.literalExpression ''
-          {
-            eiros.system.default_applications.browsers.vivaldi.render_node.auto_detect = false;
           }
         '';
         type = lib.types.bool;
@@ -144,12 +130,6 @@ in
           message = "Vivaldi requires nixpkgs.config.allowUnfree = true.";
         }
       ];
-
-      # Creates /dev/dri/nvidia-render as a stable udev symlink to the NVIDIA render node.
-      # Matched by PCI vendor ID 0x10de; survives PCI enumeration order changes.
-      services.udev.extraRules = lib.mkIf (eiros_vivaldi.nvidia.enable && eiros_vivaldi.render_node.auto_detect) ''
-        SUBSYSTEM=="drm", KERNEL=="renderD*", ATTRS{vendor}=="0x10de", SYMLINK+="dri/nvidia-render"
-      '';
 
       environment.systemPackages = [
         eiros_vivaldi.package
