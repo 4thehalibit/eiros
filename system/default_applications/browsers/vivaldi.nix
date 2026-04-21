@@ -38,8 +38,8 @@ in
   options.eiros.system.default_applications.browsers.vivaldi = {
     gpu_sandbox = {
       disable = lib.mkOption {
-        default = false;
-        description = "Disable Chromium's GPU process sandbox (--disable-gpu-sandbox). This is a security regression — only enable if needed to work around NVIDIA/Vulkan rendering issues.";
+        default = true;
+        description = "Disable Chromium's GPU process sandbox (--disable-gpu-sandbox). Required for Vulkan ANGLE on NVIDIA/Wayland — the Vulkan driver needs unrestricted access to GPU devices. Set to false only if not using --use-angle=vulkan.";
         example = lib.literalExpression ''
           {
             eiros.system.default_applications.browsers.vivaldi.gpu_sandbox.disable = true;
