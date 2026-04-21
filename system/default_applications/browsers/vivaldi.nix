@@ -20,6 +20,7 @@ let
       "--num-raster-threads=1"
 
       "--use-angle=opengl"
+      "--ignore-gpu-blocklist"
     ]
     ++ lib.optionals eiros_vivaldi.gpu_sandbox.disable [ "--disable-gpu-sandbox" ]
     ++ eiros_vivaldi.extra_flags;
