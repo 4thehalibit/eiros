@@ -311,7 +311,7 @@ in
         };
 
         grammar_packages = lib.mkOption {
-          default = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+          default = with pkgs.vimPlugins.nvim-treesitter-parsers; [
             nix
             lua
             bash
@@ -324,7 +324,7 @@ in
           description = "Treesitter grammar packages to install.";
           example = lib.literalExpression ''
             {
-              eiros.system.default_applications.editors.nixvim.plugins.treesitter.grammar_packages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [ python rust ];
+              eiros.system.default_applications.editors.nixvim.plugins.treesitter.grammar_packages = with pkgs.vimPlugins.nvim-treesitter-parsers; [ python rust ];
             }
           '';
           type = lib.types.listOf lib.types.package;
