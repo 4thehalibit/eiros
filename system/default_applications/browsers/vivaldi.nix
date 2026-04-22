@@ -1,4 +1,4 @@
-# Configures Vivaldi browser with Wayland/Ozone flags and optional NVIDIA/EGL ANGLE support.
+# Configures Vivaldi browser with hardware video decode flags.
 {
   config,
   lib,
@@ -11,33 +11,8 @@ let
 
   vivaldiFlags =
     [
-      "--ozone-platform=wayland"
-
-      "--enable-features=UseOzonePlatform,ExternalProtocolDialog"
-      "--disable-features=IntentPicker,DelegatedCompositing,WaylandLinuxDrmSyncobj"
-
-      # --disable-features=WebGPU alone does not stop Dawn from initializing in Vivaldi's build.
-      # --disable-blink-features=WebGPU disables the Blink runtime flag, which actually prevents
-      # Dawn from being initialized. Without this, Dawn attempts ES 3.1 context creation on every
-      # page load (ANGLE GL only exposes ES 3.0), producing eglCreateContext errors and stale
-      # SharedImage mailbox accesses that manifest as frame glitches.
-      "--disable-blink-features=WebGPU"
-
-      "--use-cmd-decoder=passthrough"
-    ]
-    # Use EGL/OpenGL ANGLE backend on NVIDIA (--use-angle=vulkan causes black screens on
-    # this NVIDIA+Wayland system). --ignore-gpu-blocklist bypasses the stale NVIDIA WebGL2
-    # blocklist entry. AcceleratedVideoDecode is disabled because Vivaldi adds
-    # --render-node-override which forces VA-API onto the NVIDIA render node regardless of
-    # VaapiOnNvidiaGPUs; libva-nvidia-driver then fails vaEndPicture, destroying SharedImage
-    # mailboxes the compositor holds, producing ProduceSkia errors and visible flickering.
-    ++ lib.optionals eiros_vivaldi.nvidia.enable [
-      "--use-angle=gl"
-      "--ignore-gpu-blocklist"
-      "--disable-features=AcceleratedVideoDecode"
-    ]
-    ++ lib.optionals (eiros_vivaldi.nvidia.enable && eiros_vivaldi.gpu_sandbox.disable) [
-      "--disable-gpu-sandbox"
+      "--enable-accelerated-video-decode"
+      "--enable-features=VaapiVideoDecoder,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL"
     ]
     ++ eiros_vivaldi.extra_flags;
 
@@ -46,39 +21,12 @@ let
 
     postFixup = (old.postFixup or "") + ''
       wrapProgram $out/bin/vivaldi \
-        --add-flags "${lib.concatStringsSep " " vivaldiFlags}"${lib.optionalString eiros_vivaldi.nvidia.enable '' \
-        --set NVD_BACKEND direct''}
+        --add-flags "${lib.concatStringsSep " " vivaldiFlags}"
     '';
   });
 in
 {
   options.eiros.system.default_applications.browsers.vivaldi = {
-    nvidia = {
-      enable = lib.mkOption {
-        default = false;
-        description = "Enable NVIDIA-specific flags (--use-angle=gl, --ignore-gpu-blocklist). Defaults to eiros.system.hardware.graphics.nvidia.enable. Required for WebGL2 on NVIDIA/Wayland.";
-        example = lib.literalExpression ''
-          {
-            eiros.system.default_applications.browsers.vivaldi.nvidia.enable = true;
-          }
-        '';
-        type = lib.types.bool;
-      };
-    };
-
-    gpu_sandbox = {
-      disable = lib.mkOption {
-        default = true;
-        description = "Disable Chromium's GPU process sandbox (--disable-gpu-sandbox). Only takes effect when nvidia.enable = true. May be required for EGL/ANGLE on NVIDIA/Wayland.";
-        example = lib.literalExpression ''
-          {
-            eiros.system.default_applications.browsers.vivaldi.gpu_sandbox.disable = true;
-          }
-        '';
-        type = lib.types.bool;
-      };
-    };
-
     extra_flags = lib.mkOption {
       default = [ ];
       description = "Additional command-line flags appended to the Vivaldi wrapper.";
@@ -114,7 +62,7 @@ in
 
     package = lib.mkOption {
       default = vivaldi-wayland;
-      description = "Vivaldi package to install (Wayland/Ozone wrapped).";
+      description = "Vivaldi package to install (wrapped with video decode flags).";
       example = lib.literalExpression ''
         {
           eiros.system.default_applications.browsers.vivaldi.package = pkgs.vivaldi;
@@ -124,30 +72,22 @@ in
     };
   };
 
-  config = lib.mkMerge [
-    {
-      eiros.system.default_applications.browsers.vivaldi.nvidia.enable = lib.mkDefault (
-        config.eiros.system.hardware.graphics.nvidia.enable or false
-      );
-    }
+  config = lib.mkIf eiros_vivaldi.enable {
+    assertions = [
+      {
+        assertion = config.nixpkgs.config.allowUnfree or false;
+        message = "Vivaldi requires nixpkgs.config.allowUnfree = true.";
+      }
+    ];
 
-    (lib.mkIf eiros_vivaldi.enable {
-      assertions = [
-        {
-          assertion = config.nixpkgs.config.allowUnfree or false;
-          message = "Vivaldi requires nixpkgs.config.allowUnfree = true.";
-        }
-      ];
+    environment.systemPackages = [
+      eiros_vivaldi.package
+    ];
 
-      environment.systemPackages = [
-        eiros_vivaldi.package
-      ];
-
-      xdg.mime.defaultApplications = {
-        "text/html" = [ eiros_vivaldi.desktop_file ];
-        "x-scheme-handler/http" = [ eiros_vivaldi.desktop_file ];
-        "x-scheme-handler/https" = [ eiros_vivaldi.desktop_file ];
-      };
-    })
-  ];
+    xdg.mime.defaultApplications = {
+      "text/html" = [ eiros_vivaldi.desktop_file ];
+      "x-scheme-handler/http" = [ eiros_vivaldi.desktop_file ];
+      "x-scheme-handler/https" = [ eiros_vivaldi.desktop_file ];
+    };
+  };
 }
