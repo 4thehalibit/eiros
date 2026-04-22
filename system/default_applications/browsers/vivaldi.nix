@@ -15,6 +15,16 @@ let
 
       "--enable-features=UseOzonePlatform,ExternalProtocolDialog"
       "--disable-features=IntentPicker,DelegatedCompositing,Vulkan,VaapiVideoDecoder,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,WebGPU"
+      # --disable-features=WebGPU alone does not stop Dawn from initializing in Vivaldi's build.
+      # --disable-blink-features=WebGPU disables the Blink runtime flag, which actually prevents
+      # Dawn from being initialized. Without this, Dawn attempts ES 3.1 context creation on every
+      # page load (ANGLE GL only exposes ES 3.0), producing eglCreateContext errors and stale
+      # SharedImage mailbox accesses that manifest as frame glitches.
+      "--disable-blink-features=WebGPU"
+      # Disable Vulkan explicitly. Dawn enumerates Vulkan adapters for WebGPU even when
+      # --disable-features=Vulkan is set, triggering wayland_surface_factory.cc warnings about
+      # Wayland/Vulkan incompatibility on this hybrid AMD+NVIDIA display system.
+      "--use-vulkan=disabled"
 
       "--disable-zero-copy"
       "--disable-partial-raster"
