@@ -16,7 +16,6 @@
       nixpkgs,
       nixvim,
       sops-nix,
-      zen_browser,
       self,
       ...
     }:
@@ -36,7 +35,6 @@
           nixpkgs
           nixvim
           sops-nix
-          zen_browser
           ;
       };
 
@@ -123,11 +121,6 @@
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    zen_browser = {
-      url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

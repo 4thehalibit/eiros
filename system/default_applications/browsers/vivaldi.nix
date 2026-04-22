@@ -142,7 +142,7 @@ in
         eiros_vivaldi.package
       ];
 
-      xdg.mime.defaultApplications = lib.mkDefault {
+      xdg.mime.defaultApplications = {
         "text/html" = [ eiros_vivaldi.desktop_file ];
         "x-scheme-handler/http" = [ eiros_vivaldi.desktop_file ];
         "x-scheme-handler/https" = [ eiros_vivaldi.desktop_file ];

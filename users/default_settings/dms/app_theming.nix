@@ -178,7 +178,7 @@
         description = "Generate Zen Browser theme colors via matugen.";
         example = lib.literalExpression ''
           {
-            eiros.system.user_defaults.dms.app_theming.matugen.zen_browser = false;
+            eiros.system.user_defaults.dms.app_theming.matugen.zen_browser = true;
           }
         '';
       };
