@@ -14,7 +14,7 @@ let
       "--ozone-platform=wayland"
 
       "--enable-features=UseOzonePlatform,ExternalProtocolDialog"
-      "--disable-features=IntentPicker"
+      "--disable-features=IntentPicker,DelegatedCompositing"
 
       "--disable-zero-copy"
       "--num-raster-threads=1"
