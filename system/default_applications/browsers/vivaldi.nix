@@ -22,7 +22,6 @@ let
       # SharedImage mailbox accesses that manifest as frame glitches.
       "--disable-blink-features=WebGPU"
 
-      "--disable-zero-copy"
       "--disable-partial-raster"
       "--num-raster-threads=1"
     ]
