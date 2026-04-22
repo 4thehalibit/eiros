@@ -46,7 +46,8 @@ let
 
     postFixup = (old.postFixup or "") + ''
       wrapProgram $out/bin/vivaldi \
-        --add-flags "${lib.concatStringsSep " " vivaldiFlags}"
+        --add-flags "${lib.concatStringsSep " " vivaldiFlags}"${lib.optionalString eiros_vivaldi.nvidia.enable '' \
+        --set NVD_BACKEND direct''}
     '';
   });
 in
