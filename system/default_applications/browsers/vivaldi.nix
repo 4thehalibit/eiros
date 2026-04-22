@@ -27,12 +27,14 @@ let
     ]
     # Use EGL/OpenGL ANGLE backend on NVIDIA (--use-angle=vulkan causes black screens on
     # this NVIDIA+Wayland system). --ignore-gpu-blocklist bypasses the stale NVIDIA WebGL2
-    # blocklist entry. VaapiOnNvidiaGPUs/AcceleratedVideoDecodeLinuxGL are intentionally
-    # omitted: vaEndPicture failures in libva-nvidia-driver destroy SharedImage mailboxes
-    # while the compositor holds references, causing ProduceSkia errors and flickering.
+    # blocklist entry. VaapiOnNvidiaGPUs activates NVIDIA VA-API (requires libva-nvidia-driver).
+    # AcceleratedVideoDecodeLinuxGL/ZeroCopyGL are intentionally omitted: vaEndPicture failures
+    # in libva-nvidia-driver destroy SharedImage mailboxes while the compositor still holds
+    # references, producing ProduceSkia non-existent mailbox errors and visible flickering.
     ++ lib.optionals eiros_vivaldi.nvidia.enable [
       "--use-angle=gl"
       "--ignore-gpu-blocklist"
+      "--enable-features=VaapiOnNvidiaGPUs"
     ]
     ++ lib.optionals (eiros_vivaldi.nvidia.enable && eiros_vivaldi.gpu_sandbox.disable) [
       "--disable-gpu-sandbox"
