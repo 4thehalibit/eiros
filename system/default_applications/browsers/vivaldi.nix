@@ -16,7 +16,6 @@ let
       "--enable-features=UseOzonePlatform,ExternalProtocolDialog"
       "--disable-features=IntentPicker,DelegatedCompositing,Vulkan,VaapiVideoDecoder,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL"
 
-      "--disable-zero-copy"
       "--num-raster-threads=2"
     ]
     # Use EGL/OpenGL ANGLE backend on NVIDIA. The Vulkan ANGLE path fails to import
