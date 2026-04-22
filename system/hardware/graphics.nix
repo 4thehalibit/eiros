@@ -147,6 +147,19 @@ in
         };
       };
 
+      power_management = {
+        enable = lib.mkOption {
+          default = true;
+          description = "Enable NVIDIA power management (sets NVreg_PreserveVideoMemoryAllocations=1). Prevents the driver from reclaiming GPU memory allocations, improving Wayland rendering stability.";
+          example = lib.literalExpression ''
+            {
+              eiros.system.hardware.graphics.nvidia.power_management.enable = false;
+            }
+          '';
+          type = lib.types.bool;
+        };
+      };
+
       wayland = {
         wlr_no_hardware_cursors.enable = lib.mkOption {
           default = true;
@@ -222,6 +235,10 @@ in
         {
           modesetting = {
             enable = true;
+          };
+
+          powerManagement = {
+            enable = eiros_nvidia.power_management.enable;
           };
 
           nvidiaSettings = eiros_nvidia.settings.enable;
