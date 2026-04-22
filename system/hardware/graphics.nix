@@ -212,6 +212,7 @@ in
         (lib.optionalAttrs (!prime_offload_enabled) {
           GBM_BACKEND = "nvidia-drm";
           __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+          __GL_VRR_ALLOWED = "0";
         })
         // (lib.optionalAttrs eiros_nvidia.wayland.wlr_no_hardware_cursors.enable {
           WLR_NO_HARDWARE_CURSORS = "1";

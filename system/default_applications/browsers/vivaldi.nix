@@ -13,7 +13,7 @@ let
     [
       "--ozone-platform=wayland"
 
-      "--enable-features=UseOzonePlatform,ExternalProtocolDialog"
+      "--enable-features=UseOzonePlatform,ExternalProtocolDialog,CanvasOopRasterization"
       "--disable-features=IntentPicker,DelegatedCompositing"
 
       "--disable-zero-copy"
@@ -28,6 +28,7 @@ let
     ++ lib.optionals eiros_vivaldi.nvidia.enable [
       "--use-angle=gl"
       "--ignore-gpu-blocklist"
+      "--use-cmd-decoder=validating"
     ]
     ++ lib.optionals (eiros_vivaldi.nvidia.enable && eiros_vivaldi.gpu_sandbox.disable) [
       "--disable-gpu-sandbox"
