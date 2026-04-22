@@ -23,18 +23,18 @@ let
       # SharedImage mailbox accesses that manifest as frame glitches.
       "--disable-blink-features=WebGPU"
 
-      "--disable-zero-copy"
-      "--num-raster-threads=1"
+      "--enable-zero-copy"
+      "--use-cmd-decoder=passthrough"
     ]
-    # Use EGL/OpenGL ANGLE backend on NVIDIA. The Vulkan ANGLE path fails to import
-    # Wayland compositor DMA-BUFs on hybrid AMD+NVIDIA systems: the compositor (running
-    # on the AMD display GPU) allocates buffers with AMD format modifiers that NVIDIA
-    # Vulkan rejects (VK_ERROR_FEATURE_NOT_PRESENT in DmaBufImageSiblingVkLinux:616).
-    # EGL handles cross-driver modifier negotiation more permissively. NVIDIA GL 4.6
-    # covers all WebGL2 requirements; --ignore-gpu-blocklist bypasses stale blocklist entries.
+    # Use EGL/OpenGL ANGLE backend on NVIDIA (--use-angle=vulkan causes black screens on
+    # this NVIDIA+Wayland system). --ignore-gpu-blocklist bypasses the stale NVIDIA WebGL2
+    # blocklist entry. VaapiOnNvidiaGPUs activates NVIDIA VA-API (requires libva-nvidia-driver);
+    # AcceleratedVideoDecodeLinuxGL and its ZeroCopy variant enable hardware video decode
+    # via the GL path with zero-copy buffer handoff.
     ++ lib.optionals eiros_vivaldi.nvidia.enable [
       "--use-angle=gl"
       "--ignore-gpu-blocklist"
+      "--enable-features=VaapiOnNvidiaGPUs,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL"
     ]
     ++ lib.optionals (eiros_vivaldi.nvidia.enable && eiros_vivaldi.gpu_sandbox.disable) [
       "--disable-gpu-sandbox"
