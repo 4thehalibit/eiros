@@ -10,8 +10,7 @@ let
   eiros_vivaldi = config.eiros.system.default_applications.browsers.vivaldi;
 
   vivaldiFlags = [
-    "--ozone-platform=wayland"
-    "--enable-wayland-ime"
+    "--ozone-platform=x11"
     "--enable-accelerated-video-decode"
     "--enable-features=VaapiVideoDecoder,AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs"
   ]
