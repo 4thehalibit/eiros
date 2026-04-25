@@ -380,9 +380,9 @@ in
 
     programs.nvf = {
       enable = true;
+      defaultEditor = eiros_neovim.default_editor;
       settings = {
         vim = {
-          defaultEditor = eiros_neovim.default_editor;
           viAlias = eiros_neovim.vi_alias.enable;
           vimAlias = eiros_neovim.vim_alias.enable;
 
