@@ -85,18 +85,19 @@ in
     type = lib.types.bool;
   };
 
+  options.eiros.system.default_applications.gaming.steam_clipboard.select_to_copy = lib.mkOption {
+    default = true;
+    description = "Sync X11 PRIMARY selection (highlighted text) into CLIPBOARD. Disable to prevent selected text from being automatically copied to clipboard while keeping all other clipboard services running.";
+    example = lib.literalExpression ''
+      {
+        eiros.system.default_applications.gaming.steam_clipboard.select_to_copy = false;
+      }
+    '';
+    type = lib.types.bool;
+  };
+
   config = lib.mkMerge [
     (lib.mkIf eiros_steam_clipboard.enable {
-      systemd.user.services.autocutsel-clipboard = {
-        description = "Sync X11 PRIMARY selection into CLIPBOARD";
-        wantedBy = [ "default.target" ];
-        serviceConfig = {
-          ExecStart = "${autocutsel-wait "CLIPBOARD"}/bin/autocutsel-clipboard";
-          Restart = "on-failure";
-          RestartSec = 1;
-        };
-      };
-
       systemd.user.services.autocutsel-primary = {
         description = "Sync X11 CLIPBOARD into PRIMARY selection";
         wantedBy = [ "default.target" ];
@@ -112,6 +113,18 @@ in
         wantedBy = [ "default.target" ];
         serviceConfig = {
           ExecStart = "${wayland-to-x11-clipboard}/bin/wayland-to-x11-clipboard";
+          Restart = "on-failure";
+          RestartSec = 1;
+        };
+      };
+    })
+
+    (lib.mkIf (eiros_steam_clipboard.enable && eiros_steam_clipboard.select_to_copy) {
+      systemd.user.services.autocutsel-clipboard = {
+        description = "Sync X11 PRIMARY selection into CLIPBOARD";
+        wantedBy = [ "default.target" ];
+        serviceConfig = {
+          ExecStart = "${autocutsel-wait "CLIPBOARD"}/bin/autocutsel-clipboard";
           Restart = "on-failure";
           RestartSec = 1;
         };
