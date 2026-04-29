@@ -86,7 +86,7 @@ in
   };
 
   options.eiros.system.default_applications.gaming.steam_clipboard.select_to_copy = lib.mkOption {
-    default = true;
+    default = false;
     description = "Sync X11 PRIMARY selection (highlighted text) into CLIPBOARD. Disable to prevent selected text from being automatically copied to clipboard while keeping all other clipboard services running.";
     example = lib.literalExpression ''
       {
