@@ -111,7 +111,8 @@ Once built, the `eiros` command provides common management tasks:
 
 | Command | Description |
 |---|---|
-| `eiros update` | Rebuild and boot the system via `nh os boot`, automatically passing `--override-input` for `eiros_users` and `eiros_hardware` using `EIROS_USERS_URL` / `EIROS_HARDWARE_URL` |
+| `eiros update` | Update all flake inputs in place (`nix flake update`) |
+| `eiros rebuild` | Rebuild and boot the system via `nh os boot`, automatically passing `--override-input` for `eiros_users` and `eiros_hardware` using `EIROS_USERS_URL` / `EIROS_HARDWARE_URL` |
 
 The source URLs default to the values set in `eiros.system.nix.sources.*` and are inherited from the running environment, so you only need to override them when pointing at a fork.
 

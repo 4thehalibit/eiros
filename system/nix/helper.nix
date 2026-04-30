@@ -26,12 +26,15 @@ in
     environment.systemPackages = [
       (pkgs.writeShellApplication {
         name = "eiros";
-        runtimeInputs = [ pkgs.nh ];
+        runtimeInputs = [ pkgs.nh pkgs.nix ];
         text = ''
           cmd="''${1:-}"
 
           case "$cmd" in
             update)
+              nix flake update "''${NH_FLAKE:-.}"
+              ;;
+            rebuild)
               if [[ -z "''${EIROS_USERS_URL:-}" ]]; then
                 echo "error: EIROS_USERS_URL is not set" >&2
                 exit 1
@@ -48,7 +51,8 @@ in
               echo "Usage: eiros <command>"
               echo ""
               echo "Commands:"
-              echo "  update    Rebuild and boot the system (nh os boot)"
+              echo "  update     Update flake inputs (nix flake update)"
+              echo "  rebuild    Rebuild and boot the system (nh os boot)"
               exit 1
               ;;
           esac
