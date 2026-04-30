@@ -48,7 +48,7 @@ eiros/
 │   ├── locale/             # Timezone, timesync, i18n locale
 │   ├── logging/            # journald retention and rate limiting
 │   ├── networking/         # NetworkManager, hostname, DNS
-│   ├── nix/                # Flakes, GC, cache, direnv, nix-ld, nix-alien, man pages, source URLs
+│   ├── nix/                # Flakes, GC, cache, direnv, nix-ld, nix-alien, man pages, source URLs, eiros helper CLI
 │   ├── security/           # Firewall, SSH, GPG, polkit, sops, mutable accounts, hardening, dbus-broker, sudo, kernel_modules, pcscd
 │   └── virtualization/     # KVM, Docker, Distrobox, Virt Manager
 ├── users/
@@ -104,6 +104,16 @@ If you set `eiros.system.nix.nh.flake` to your config path in your hardware or u
 nh os boot
 nh os switch
 ```
+
+### The `eiros` Helper
+
+Once built, the `eiros` command provides common management tasks:
+
+| Command | Description |
+|---|---|
+| `eiros update` | Rebuild and boot the system via `nh os boot`, automatically passing `--override-input` for `eiros_users` and `eiros_hardware` using `EIROS_USERS_URL` / `EIROS_HARDWARE_URL` |
+
+The source URLs default to the values set in `eiros.system.nix.sources.*` and are inherited from the running environment, so you only need to override them when pointing at a fork.
 
 ### Creating Your Own Config Repos
 
@@ -180,6 +190,7 @@ All options are under the `eiros.*` namespace:
 | `eiros.system.desktop_environment.xwayland.*` | XWayland X11 compatibility layer (`enable`, default true) — allows X11 applications to run under the Wayland session |
 | `eiros.system.nix.*` | Build settings, GC, cache substituters, direnv, nix-ld, nix-alien FHS wrapper, nh helper, comma + nix-index-database (run any nixpkgs program without installing), man pages and NixOS documentation |
 | `eiros.system.nix.sources.*` | Configurable source URLs for the `eiros_users` and `eiros_hardware` flake inputs; exposed at runtime as `EIROS_USERS_URL` and `EIROS_HARDWARE_URL` environment variables so modules and tooling can read or override the origin repos |
+| `eiros.system.nix.helper.*` | Installs the `eiros` helper CLI for common system management tasks (enabled by default) |
 | `eiros.system.default_applications.shells.*` | Zsh (history, options, Oh My Zsh, autosuggestions, syntax highlighting), Ghostty terminal, Zellij multiplexer, atuin history search, zoxide smart cd, fzf fuzzy finder, pay-respects command corrector |
 | `eiros.system.default_applications.editors.*` | Neovim (default editor, vi/vim aliases), nixvim declarative config (LSP, treesitter, telescope, completion, plugins), Nix LSP (nil) and formatter (nixfmt) |
 | `eiros.system.default_applications.version_control.*` | Git, delta syntax-highlighted diffs, lazygit TUI |
