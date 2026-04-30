@@ -107,14 +107,64 @@ nh os switch
 
 ### The `eiros` Helper
 
-Once built, the `eiros` command provides common management tasks:
+Once built, the `eiros` command is available system-wide and covers the most common day-to-day management tasks. Tab completion is included when zsh is enabled.
 
-| Command | Description |
+#### `eiros update`
+
+```bash
+eiros update
+```
+
+Updates the flake lock file, pinning `eiros_users` and `eiros_hardware` to the URLs in the environment:
+
+```bash
+nix flake update \
+  --override-input eiros_users "$EIROS_USERS_URL" \
+  --override-input eiros_hardware "$EIROS_HARDWARE_URL"
+```
+
+| Flag | Variable | Default |
+|---|---|---|
+| `--override-input eiros_users` | `EIROS_USERS_URL` | `github:lcleveland/eiros.users` |
+| `--override-input eiros_hardware` | `EIROS_HARDWARE_URL` | `github:lcleveland/eiros.hardware` |
+
+The `--override-input` flags ensure the lock file is updated against your personal repos rather than the upstream defaults. Set `eiros.system.nix.sources.users.url` and `eiros.system.nix.sources.hardware.url` in your hardware or users flake to point at your own forks.
+
+#### `eiros rebuild`
+
+```bash
+eiros rebuild
+```
+
+Rebuilds the system and stages it as the next boot entry:
+
+```bash
+nh os boot "${NH_FLAKE:-.}#default" \
+  --override-input eiros_users "$EIROS_USERS_URL" \
+  --override-input eiros_hardware "$EIROS_HARDWARE_URL"
+```
+
+| Flag | Description |
 |---|---|
-| `eiros update` | Update all flake inputs in place (`nix flake update`) |
-| `eiros rebuild` | Rebuild and boot the system via `nh os boot`, automatically passing `--override-input` for `eiros_users` and `eiros_hardware` using `EIROS_USERS_URL` / `EIROS_HARDWARE_URL` |
+| `${NH_FLAKE:-.}#default` | Flake path from `NH_FLAKE` env var (set by `eiros.system.nix.nh.flake`) with the `default` NixOS configuration attribute |
+| `--override-input eiros_users` | Injects your users flake from `EIROS_USERS_URL` at build time |
+| `--override-input eiros_hardware` | Injects your hardware flake from `EIROS_HARDWARE_URL` at build time |
 
-The source URLs default to the values set in `eiros.system.nix.sources.*` and are inherited from the running environment, so you only need to override them when pointing at a fork.
+The new generation becomes active on next reboot. Use `nh os switch` directly if you want to activate immediately without rebooting.
+
+#### `eiros clean`
+
+```bash
+eiros clean
+```
+
+Removes old Nix store generations and unreachable store paths:
+
+```bash
+nh clean all
+```
+
+Frees disk space by deleting generations that are no longer the current or previous boot entry and running the Nix garbage collector on what remains unreachable.
 
 ### Creating Your Own Config Repos
 
