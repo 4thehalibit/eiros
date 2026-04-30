@@ -33,7 +33,17 @@ in
 
           case "$cmd" in
             update)
-              nix flake update "''${NH_FLAKE:-.}"
+              if [[ -z "''${EIROS_USERS_URL:-}" ]]; then
+                echo "error: EIROS_USERS_URL is not set" >&2
+                exit 1
+              fi
+              if [[ -z "''${EIROS_HARDWARE_URL:-}" ]]; then
+                echo "error: EIROS_HARDWARE_URL is not set" >&2
+                exit 1
+              fi
+              nix flake update \
+                --override-input eiros_users "$EIROS_USERS_URL" \
+                --override-input eiros_hardware "$EIROS_HARDWARE_URL"
               ;;
             rebuild)
               if [[ -z "''${EIROS_USERS_URL:-}" ]]; then
