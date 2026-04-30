@@ -3,12 +3,20 @@
 # to satisfy its library dependencies, and registers the ninjarmm:// URL scheme
 # so browsers can launch remote sessions directly.
 #
-# Usage:
-#   1. Download the x64 Debian/Ubuntu installer from your NinjaOne portal.
-#   2. Set eiros.system.default_applications.utilities.ninjaone.deb_path to its path.
-#   3. Rebuild. The ncplayer binary and URL scheme handler are installed automatically.
+# Quick start:
+#   1. Log in to your NinjaOne portal → Devices → Add Device → Linux → x64 Debian/Ubuntu
+#   2. Save the .deb to a path outside your config repo (it is tenant-specific):
+#        mkdir -p ~/private && mv ~/Downloads/ninjarmm-ncplayer-*_amd64.deb ~/private/ninjarmm-ncplayer_amd64.deb
+#   3. Enable the module and point deb_path at it:
+#        eiros.system.default_applications.utilities.ninjaone = {
+#          enable = true;
+#          deb_path = /home/user/private/ninjarmm-ncplayer_amd64.deb;
+#          update_alias.enable = true;  # optional: adds update-ninja shell alias
+#        };
+#   4. Rebuild. Binary extraction, FHS wrapping, and URL scheme registration are automatic.
 #
-# To update: download the new .deb, update deb_path, and rebuild.
+# To update: download the new .deb, move it to the same path, rebuild.
+#            With update_alias.enable = true, run `update-ninja` then rebuild.
 {
   config,
   lib,
@@ -56,6 +64,9 @@ let
       MimeType=x-scheme-handler/ninjarmm;
     '';
   };
+
+  deb_dir = builtins.dirOf (toString cfg.deb_path);
+  deb_name = builtins.baseNameOf (toString cfg.deb_path);
 in
 {
   options.eiros.system.default_applications.utilities.ninjaone = {
@@ -64,8 +75,10 @@ in
       description = "Install the NinjaOne remote access client (ncplayer).";
       example = lib.literalExpression ''
         {
-          eiros.system.default_applications.utilities.ninjaone.enable = true;
-          eiros.system.default_applications.utilities.ninjaone.deb_path = ./ninjarmm-ncplayer_amd64.deb;
+          eiros.system.default_applications.utilities.ninjaone = {
+            enable = true;
+            deb_path = /home/user/private/ninjarmm-ncplayer_amd64.deb;
+          };
         }
       '';
       type = lib.types.bool;
@@ -78,18 +91,30 @@ in
         Path to the NinjaOne ncplayer .deb installer downloaded from your NinjaOne portal.
         The file is copied into the Nix store at evaluation time.
 
-        Note: the installer is tenant-specific (tied to your NinjaOne account) and should
-        NOT be committed to a public repository. Reference it with an absolute path outside
-        your config repo, e.g. /home/user/private/ninjarmm-ncplayer_amd64.deb.
+        The installer is tenant-specific (tied to your NinjaOne account) and should NOT be
+        committed to a public repository. Use an absolute path outside your config repo:
+          mkdir -p ~/private
+          mv ~/Downloads/ninjarmm-ncplayer-*_amd64.deb ~/private/ninjarmm-ncplayer_amd64.deb
 
-        New installers are released frequently. To update, download the latest .deb from
-        your portal, update this path, and rebuild.
+        NinjaOne releases updates frequently. To update, download the new .deb, replace the
+        file at this path, and rebuild. Enable update_alias for a helper alias.
       '';
       example = lib.literalExpression ''
         {
           eiros.system.default_applications.utilities.ninjaone.deb_path = /home/user/private/ninjarmm-ncplayer_amd64.deb;
         }
       '';
+    };
+
+    update_alias = {
+      enable = lib.mkOption {
+        default = false;
+        description = ''
+          Add an update-ninja zsh alias that copies the latest ninjarmm-ncplayer*.deb
+          from ~/Downloads to the configured deb_path, ready for a rebuild.
+        '';
+        type = lib.types.bool;
+      };
     };
   };
 
@@ -102,6 +127,10 @@ in
     # Register ninjarmm:// as a system-wide URL scheme handled by ncplayer.
     xdg.mime.defaultApplications = {
       "x-scheme-handler/ninjarmm" = "ninjarmm-ncplayer.desktop";
+    };
+
+    programs.zsh.shellAliases = lib.mkIf cfg.update_alias.enable {
+      update-ninja = ''{ deb=$(ls ~/Downloads/ninjarmm-ncplayer-*.deb 2>/dev/null | sort -V | tail -1) && [ -n "$deb" ] && cp "$deb" "${deb_dir}/${deb_name}" && echo "Updated from $deb — run rebuild to apply." || echo "No ninjarmm-ncplayer*.deb found in ~/Downloads."; }'';
     };
   };
 }
